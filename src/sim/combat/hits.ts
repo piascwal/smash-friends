@@ -1,8 +1,7 @@
 /* Détection des frappes à chaque image : zones de coups des combattants contre zones sensibles,
-   chopes, boucliers, contres ; puis projectiles (avec renvoi). */
+   boucliers, contres ; puis projectiles (avec renvoi). */
 import { circleRect, type Circle } from '../core/math';
 import type { Fighter } from '../fighter/fighter';
-import { seize } from '../fighter/grab';
 import type { HitboxDef } from '../moves/types';
 import type { Projectile } from '../projectiles/projectile';
 import { projectileHitPoint } from '../projectiles/update';
@@ -25,7 +24,6 @@ export function activeHitboxes(f: Fighter): ActiveHitbox[] {
   const out: ActiveHitbox[] = [];
   m.def.hitboxes.forEach((h, index) => {
     if (m.frame < h.start || m.frame > h.end) return;
-    if (m.def.kind === 'throw') return;
     out.push({
       x: f.x + h.x * f.facing * f.size,
       y: f.y + h.y * f.size,
@@ -50,17 +48,8 @@ function alreadyHit(a: Fighter, v: Fighter, h: HitboxDef): boolean {
   return !h.rehit || a.move!.frame - last < h.rehit;
 }
 
-function grabbable(v: Fighter): boolean {
-  return v.vulnerable && !['grabbed', 'ledge', 'dizzy'].includes(v.state) && (v.grounded || v.y > -40);
-}
-
 function resolveOne(w: World, a: Fighter, v: Fighter, hb: ActiveHitbox): boolean {
   const h = hb.def;
-  if (h.grab) {
-    if (!grabbable(v) || a.state !== 'move' || a.partner) return false;
-    seize(a, v, w);
-    return true;
-  }
   const dir = h.behind ? -a.facing : a.facing;
   const ctx = { by: a.slot, attacker: a, x: (hb.x + v.x) / 2, y: hb.y, dir };
   a.move!.hits.set(v.slot, a.move!.frame);
@@ -79,11 +68,11 @@ export function resolveFighterHits(w: World): void {
       if (!v.vulnerable && !shielding(v)) continue;
       const hurt = v.hurtbox();
       for (const hb of boxes) {
-        if (!hb.def.grab && alreadyHit(a, v, hb.def)) continue;
+        if (alreadyHit(a, v, hb.def)) continue;
         if (!circleRect(hb, hurt)) continue;
         if (resolveOne(w, a, v, hb)) break;
       }
-      if (a.state !== 'move') break; // chope réussie, contre subi…
+      if (a.state !== 'move') break; // contre subi…
     }
   }
 }

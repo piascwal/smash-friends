@@ -1,5 +1,6 @@
-/* Commandes tactiles (téléphone, tablette) : stick virtuel à gauche (il apparaît sous le pouce),
-   boutons à droite disposés comme sur une manette. */
+/* Commandes tactiles (téléphone, tablette) : stick virtuel à gauche (il apparaît sous le pouce) qui
+   sert aussi à sauter (vers le haut), et trois boutons à droite : A (coups, smash en tenant avec une
+   direction), B (spéciaux, lancer l'objet tenu), garde. */
 import { BUTTONS, type Button, type Controls } from '../sim/core/input';
 import type { Device } from './device';
 
@@ -14,10 +15,7 @@ interface TouchButton {
 const LAYOUT: TouchButton[] = [
   { button: 'attack', label: 'A', cls: 'tb-a' },
   { button: 'special', label: 'B', cls: 'tb-b' },
-  { button: 'jump', label: 'SAUT', cls: 'tb-jump' },
   { button: 'shield', label: 'GARDE', cls: 'tb-shield' },
-  { button: 'smash', label: 'SMASH', cls: 'tb-smash' },
-  { button: 'grab', label: 'CHOPE', cls: 'tb-grab' },
   { button: 'pause', label: 'II', cls: 'tb-pause' },
 ];
 

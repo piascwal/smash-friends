@@ -1,5 +1,7 @@
-/* Déclencher une action : un coup (avec choix tilt / smash / aérien / spécial selon le stick),
-   un saut, une chope. Appelé par les états qui peuvent agir. */
+/* Déclencher une action : un coup (jab, smash à charger, aérien, spécial selon le stick), ou utiliser
+   l'objet tenu. Appelé par les états qui peuvent agir.
+   Au sol, direction + A lance un smash : il se charge tant que A est tenu et part au relâché ; un
+   simple appui bref donne le coup rapide (tilt) de cette direction. */
 import type { World } from '../world';
 import type { Direction } from './controls';
 import type { Fighter } from './fighter';
@@ -18,23 +20,23 @@ export function faceStick(f: Fighter, x = f.ctl.cur.x): void {
   if (Math.abs(x) > 0.3) f.facing = x < 0 ? -1 : 1;
 }
 
-/** Smash demandé : bouton smash, stick C, ou attaque avec le stick claqué. Renvoie sa direction. */
-function smashInput(f: Fighter): { x: number; y: number } | null {
-  const c = f.ctl;
-  const cs = c.cstick();
-  if (cs) return cs;
-  if (c.pressed('smash')) {
-    c.consume('smash');
-    return { x: c.cur.x, y: c.cur.y };
-  }
-  if (c.pressed('attack', 2) && (c.flickX() !== 0 || c.flickY() !== 0)) {
-    c.consume('attack');
-    return { x: c.cur.x, y: c.cur.y };
-  }
-  return null;
-}
+/** Le stick est-il franchement poussé (smash plutôt que jab) ? */
+const strongStick = (x: number, y: number): boolean => Math.max(Math.abs(x), Math.abs(y)) > 0.5;
 
-const smashSlot = (d: Direction): string => (d === 'up' ? 'usmash' : d === 'down' ? 'dsmash' : 'fsmash');
+const SMASH: Record<Direction, string> = {
+  up: 'usmash',
+  down: 'dsmash',
+  forward: 'fsmash',
+  back: 'fsmash',
+  neutral: 'jab1',
+};
+const TILT: Record<Direction, string> = {
+  up: 'utilt',
+  down: 'dtilt',
+  forward: 'ftilt',
+  back: 'ftilt',
+  neutral: 'jab1',
+};
 
 function specialSlot(d: Direction): string {
   if (d === 'up') return 'uspecial';
@@ -43,11 +45,15 @@ function specialSlot(d: Direction): string {
   return 'nspecial';
 }
 
-/** Spéciaux (au sol comme en l'air). */
+/** Spéciaux (au sol comme en l'air) ; avec un objet en main, B le lance. */
 export function trySpecial(f: Fighter, w: World): boolean {
   const c = f.ctl;
   if (!c.pressed('special')) return false;
   c.consume('special');
+  if (f.item) {
+    throwHeld(f, w, c.cur.x, c.cur.y, false);
+    return true;
+  }
   const d = c.direction(f.facing);
   const slot = specialSlot(d);
   if (slot === 'sspecial') {
@@ -59,29 +65,28 @@ export function trySpecial(f: Fighter, w: World): boolean {
   return true;
 }
 
-/** Attaques au sol : smash, inclinaisons, jab, attaque en course. */
+/** Smash au sol, chargé tant que A (ou le stick C) reste tenu. */
+export function startSmash(f: Fighter, w: World, x: number, y: number, tiltFallback: boolean): void {
+  const d = f.ctl.direction(f.facing, x, y);
+  if (d === 'forward' || d === 'back') faceStick(f, x);
+  startMove(f, w, SMASH[d]);
+  if (tiltFallback && f.move) f.move.tilt = TILT[d];
+}
+
+/** Attaques au sol : smash (direction + A), jab, attaque en course. */
 export function tryGroundAttack(f: Fighter, w: World, running: boolean): boolean {
+  const c = f.ctl;
   if (f.item && tryItemUse(f, w)) return true;
-  const sm = smashInput(f);
-  if (sm) {
-    const d = f.ctl.direction(f.facing, sm.x, sm.y);
-    if (d === 'forward' || d === 'back') faceStick(f, sm.x);
-    startMove(f, w, smashSlot(d));
+  const cs = c.cstick();
+  if (cs) {
+    startSmash(f, w, cs.x, cs.y, false);
     return true;
   }
-  if (!f.ctl.pressed('attack')) return false;
-  f.ctl.consume('attack');
-  if (running) {
-    startMove(f, w, 'dash');
-    return true;
-  }
-  const d = f.ctl.direction(f.facing);
-  if (d === 'up') startMove(f, w, 'utilt');
-  else if (d === 'down') startMove(f, w, 'dtilt');
-  else if (d === 'forward' || d === 'back') {
-    faceStick(f);
-    startMove(f, w, 'ftilt');
-  } else startMove(f, w, 'jab1');
+  if (!c.pressed('attack')) return false;
+  c.consume('attack');
+  if (running) startMove(f, w, 'dash');
+  else if (strongStick(c.cur.x, c.cur.y)) startSmash(f, w, c.cur.x, c.cur.y, true);
+  else startMove(f, w, 'jab1');
   return true;
 }
 
@@ -90,9 +95,8 @@ export function tryAirAttack(f: Fighter, w: World): boolean {
   if (f.item && tryItemUse(f, w)) return true;
   const c = f.ctl;
   let dir = c.cstick();
-  if (!dir && (c.pressed('attack') || c.pressed('smash'))) {
+  if (!dir && c.pressed('attack')) {
     c.consume('attack');
-    c.consume('smash');
     dir = { x: c.cur.x, y: c.cur.y };
   }
   if (!dir) return false;
@@ -102,28 +106,33 @@ export function tryAirAttack(f: Fighter, w: World): boolean {
   return true;
 }
 
-/** Objet tenu : frapper avec, tirer, ou le lancer. */
+function throwHeld(f: Fighter, w: World, x: number, y: number, strong: boolean): void {
+  f.throwAim = { x, y, strong: strong || Math.hypot(x, y) > 0.9 };
+  faceStick(f, x);
+  startMove(f, w, 'itemthrow');
+}
+
+/** Objet tenu et A : frapper avec (smash si direction), tirer, ou le lancer. */
 function tryItemUse(f: Fighter, w: World): boolean {
   const c = f.ctl;
   const item = f.item!;
-  const sm = c.cstick() ?? (c.pressed('smash') ? { x: c.cur.x, y: c.cur.y } : null);
-  const attack = c.pressed('attack');
-  const toss = c.pressed('grab');
-  if (!sm && !attack && !toss) return false;
-  for (const b of ['attack', 'smash', 'grab'] as const) c.consume(b);
+  const cs = c.cstick();
+  if (!cs && !c.pressed('attack')) return false;
+  c.consume('attack');
+  const x = cs?.x ?? c.cur.x;
+  const y = cs?.y ?? c.cur.y;
   const kind = item.def.kind;
-  if (kind === 'melee' && !toss) {
-    startMove(f, w, sm ? 'itemsmash' : 'itemswing');
+  if (kind === 'melee') {
+    if (f.grounded && (cs || strongStick(x, y))) {
+      faceStick(f, x);
+      startMove(f, w, 'itemsmash');
+    } else startMove(f, w, 'itemswing');
     return true;
   }
-  if (kind === 'shooter' && attack && !sm && item.ammo > 0) {
+  if (kind === 'shooter' && item.ammo > 0 && !cs) {
     startMove(f, w, 'itemshoot');
     return true;
   }
-  const dx = sm ? sm.x : c.cur.x;
-  const dy = sm ? sm.y : c.cur.y;
-  f.throwAim = { x: dx, y: dy, strong: !!sm || Math.hypot(dx, dy) > 0.9 };
-  faceStick(f, dx);
-  startMove(f, w, 'itemthrow');
+  throwHeld(f, w, x, y, !!cs);
   return true;
 }

@@ -2,7 +2,6 @@
    directionnelle, et l'étourdissement après un bouclier brisé. */
 import { SHIELD } from '../core/config';
 import type { World } from '../world';
-import { startMove } from './actions';
 import type { Fighter } from './fighter';
 import { applyFriction, leaveGround } from './physics';
 
@@ -22,21 +21,15 @@ function startRoll(f: Fighter, dir: number): void {
   f.intangible = 16;
 }
 
-/** Bouclier tenu : options « hors bouclier » (saut, chope, roulade, esquive). */
+/** Bouclier tenu : options « hors bouclier » (saut, roulade, esquive). */
 function updateShield(f: Fighter, w: World): void {
   const c = f.ctl;
   applyFriction(f, w, 2);
   f.shield -= SHIELD.decay;
   if (f.shield <= 0) return breakShield(f, w);
-  if (c.pressed('jump') || (f.tapJump && c.flickY() === -1)) {
+  if (c.pressed('jump') || (f.tapJump && c.tapUp())) {
     c.consume('jump');
     f.setState('jumpsquat', 4);
-    return;
-  }
-  if (c.pressed('grab') || c.pressed('attack')) {
-    c.consume('grab');
-    c.consume('attack');
-    startMove(f, w, 'grab');
     return;
   }
   const fx = c.flickX();

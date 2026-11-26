@@ -1,5 +1,5 @@
 /* Les manettes (Gamepad API, disposition standard) : stick gauche, stick C pour les smashs,
-   A attaque, B spécial, X/Y saut, gâchettes bouclier, RB chope, Start pause. */
+   A attaque, B spécial, X/Y saut, gâchettes et LB/RB bouclier, Start pause. */
 import { BUTTONS, type Controls } from '../sim/core/input';
 import type { Device } from './device';
 
@@ -28,8 +28,7 @@ export function readPad(p: Gamepad): Controls {
   if (pressed(p, 0)) b |= BUTTONS.attack;
   if (pressed(p, 1)) b |= BUTTONS.special;
   if (pressed(p, 2) || pressed(p, 3)) b |= BUTTONS.jump;
-  if (pressed(p, 4) || pressed(p, 6) || pressed(p, 7)) b |= BUTTONS.shield;
-  if (pressed(p, 5)) b |= BUTTONS.grab;
+  if (pressed(p, 4) || pressed(p, 5) || pressed(p, 6) || pressed(p, 7)) b |= BUTTONS.shield;
   if (pressed(p, 9)) b |= BUTTONS.pause;
   return { x, y, cx: dz(p.axes[2] ?? 0), cy: dz(p.axes[3] ?? 0), buttons: b };
 }

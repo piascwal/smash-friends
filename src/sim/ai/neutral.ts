@@ -29,7 +29,7 @@ export function threatened(m: Match, f: Fighter): boolean {
     const d = Math.hypot(o.x - f.x, o.y - f.y);
     if (d > 150 * o.size) continue;
     const m0 = o.move;
-    const soon = m0.def.hitboxes.some((h) => h.start - m0.frame <= 8 && h.end >= m0.frame && !h.grab);
+    const soon = m0.def.hitboxes.some((h) => h.start - m0.frame <= 8 && h.end >= m0.frame);
     if (soon || activeHitboxes(o).length) return true;
   }
   return m.projectiles.some(
@@ -51,7 +51,7 @@ export function defend(f: Fighter, rng: Rng): Controls[] {
 
 function closeRange(f: Fighter, t: Fighter, rng: Rng, level: number, toward: number): Controls[] {
   const killable = t.percent > 118 - level * 3;
-  if (t.state === 'shield' || t.state === 'shieldstun') return tap(toward, 0, 'grab');
+  if (t.state === 'shield' || t.state === 'shieldstun') return chargedSmash(toward, 0, rng.int(10, 30));
   if (killable && rng.chance(0.55)) {
     const r = rng.next();
     const charge = rng.int(0, 6 + level * 2);
@@ -63,7 +63,7 @@ function closeRange(f: Fighter, t: Fighter, rng: Rng, level: number, toward: num
   const r = rng.next();
   if (r < 0.28) return turn.concat(tap(0, 0, 'attack'), tap(0, 0, 'attack'), tap(0, 0, 'attack'));
   if (r < 0.5) return tap(toward * 0.6, 0, 'attack');
-  if (r < 0.66) return tap(toward, 0, 'grab');
+  if (r < 0.66) return tap(toward * 0.8, 0, 'attack');
   if (r < 0.78) return tap(0, 0.7, 'attack');
   if (r < 0.9) return chargedSmash(0, 1, rng.int(0, 8));
   return tap(0, 0, 'special');

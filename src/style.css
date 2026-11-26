@@ -817,48 +817,26 @@ kbd {
 }
 .tb-a {
   right: 4%;
-  bottom: 18%;
-  width: 78px;
-  height: 78px;
-  font-size: 26px;
+  bottom: 12%;
+  width: 96px;
+  height: 96px;
+  font-size: 34px;
   background: #ef3b2c66;
 }
 .tb-b {
-  right: calc(4% + 86px);
-  bottom: 8%;
-  width: 64px;
-  height: 64px;
-  font-size: 22px;
+  right: calc(4% + 106px);
+  bottom: 6%;
+  width: 80px;
+  height: 80px;
+  font-size: 28px;
   background: #3b7bff66;
 }
-.tb-jump {
-  right: calc(4% + 6px);
-  bottom: calc(18% + 88px);
-  width: 64px;
-  height: 64px;
-  font-size: 11px;
-}
 .tb-shield {
-  right: calc(4% + 160px);
-  bottom: 6%;
-  width: 58px;
-  height: 58px;
-  font-size: 10px;
-}
-.tb-smash {
-  right: calc(4% + 84px);
-  bottom: calc(8% + 76px);
-  width: 60px;
-  height: 60px;
-  font-size: 10px;
-  background: #ffc21a55;
-}
-.tb-grab {
-  right: calc(4% + 160px);
-  bottom: calc(6% + 66px);
-  width: 50px;
-  height: 50px;
-  font-size: 9px;
+  right: calc(4% + 14px);
+  bottom: calc(12% + 108px);
+  width: 70px;
+  height: 70px;
+  font-size: 12px;
 }
 .tb-pause {
   top: 3%;

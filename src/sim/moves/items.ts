@@ -21,7 +21,7 @@ export const itemSmash: MoveDef = {
   windup: 'block',
   windupEnd: 14,
   total: 58,
-  charge: { frame: 8, max: 60, button: 'smash', bonus: 0.4 },
+  charge: { frame: 8, max: 60, button: 'attack', bonus: 0.4 },
   hitboxes: [hb(16, 18, 70, -62, 36, 24, 40, 60, 110, { effect: 'slash' })],
   fx: { stretch: 1.2, trail: 'smash' },
   sfx: 'smash',

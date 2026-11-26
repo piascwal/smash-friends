@@ -3,7 +3,7 @@
 import { approach } from '../core/math';
 import { itemInReach, pickUp } from '../items/carry';
 import type { World } from '../world';
-import { faceStick, startMove, tryGroundAttack, trySpecial } from './actions';
+import { faceStick, startSmash, tryGroundAttack, trySpecial } from './actions';
 import { startShield } from './defense';
 import type { Fighter } from './fighter';
 import { applyFriction, leaveGround } from './physics';
@@ -17,11 +17,6 @@ export function tryGroundActions(f: Fighter, w: World, running = false): boolean
   if (c.pressed('jump')) {
     c.consume('jump');
     f.setState('jumpsquat', JUMPSQUAT);
-    return true;
-  }
-  if (c.pressed('grab') && !f.item) {
-    c.consume('grab');
-    startMove(f, w, running ? 'dashgrab' : 'grab');
     return true;
   }
   if (c.pressed('attack') && !f.item) {
@@ -39,7 +34,7 @@ export function tryGroundActions(f: Fighter, w: World, running = false): boolean
   }
   if (trySpecial(f, w)) return true;
   if (tryGroundAttack(f, w, running)) return true;
-  if (f.tapJump && c.flickY() === -1) {
+  if (f.tapJump && c.tapUp()) {
     f.setState('jumpsquat', JUMPSQUAT);
     return true;
   }
@@ -99,10 +94,10 @@ function updateRun(f: Fighter, w: World): void {
 }
 
 function updateJumpsquat(f: Fighter, w: World): void {
-  // attaque pendant la préparation d'un saut au stick : smash haut (comme dans Melee)
-  if (f.ctl.pressed('attack', 2) && f.ctl.cur.y < -0.5 && !f.ctl.held('jump')) {
+  // haut + A : le saut au stick démarre, A le transforme en smash haut (comme dans Melee)
+  if (f.ctl.pressed('attack', 3) && f.ctl.cur.y < -0.5 && !f.ctl.held('jump')) {
     f.ctl.consume('attack');
-    startMove(f, w, 'usmash');
+    startSmash(f, w, 0, -1, true);
     return;
   }
   if (f.t < f.duration) return;

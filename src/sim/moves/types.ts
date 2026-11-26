@@ -19,13 +19,11 @@ export interface HitboxDef {
   /** Éjection de base et croissance (formule de Melee). */
   bkb: number;
   kbg: number;
-  /** Éjection fixe (ne dépend pas des pourcents) : chopes, petits coups d'enchaînement. */
+  /** Éjection fixe (ne dépend pas des pourcents) : petits coups d'enchaînement. */
   wkb?: number;
   effect?: Effect;
   /** Une même zone ne touche qu'une fois par coup, sauf coups multiples : nouvelle frappe toutes les `rehit` images. */
   rehit?: number;
-  /** Zone de saisie (passe le bouclier, ne fait pas de dégâts). */
-  grab?: boolean;
   /** Envoie vers l'arrière du lanceur (coups qui frappent derrière). */
   behind?: boolean;
 }
@@ -39,7 +37,7 @@ export interface MotionStep {
   gravity?: number;
 }
 
-export type MoveKind = 'ground' | 'air' | 'special' | 'grab' | 'throw' | 'item';
+export type MoveKind = 'ground' | 'air' | 'special' | 'item';
 
 export interface MoveDef {
   id: string;
@@ -51,7 +49,7 @@ export interface MoveDef {
   total: number;
   hitboxes: HitboxDef[];
   /** Smash ou spécial à charger : à l'image `frame`, tant que le bouton est tenu (au plus `max` images). */
-  charge?: { frame: number; max: number; button: 'attack' | 'special' | 'smash'; bonus: number };
+  charge?: { frame: number; max: number; button: 'attack' | 'special'; bonus: number };
   /** Lag à l'atterrissage pendant un aérien. */
   landingLag?: number;
   motion?: MotionStep[];
@@ -106,13 +104,6 @@ export const MOVE_SLOTS = [
   'sspecial',
   'uspecial',
   'dspecial',
-  'grab',
-  'dashgrab',
-  'pummel',
-  'fthrow',
-  'bthrow',
-  'uthrow',
-  'dthrow',
   'getup',
   'ledge',
 ] as const;

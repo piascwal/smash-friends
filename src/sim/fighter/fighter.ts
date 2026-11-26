@@ -1,5 +1,5 @@
 /* Un combattant : position, vitesse, état, pourcents, vies… Les règles qui le font évoluer sont dans
-   les modules voisins (sol, air, défense, dégâts, rebord, chope, coups). */
+   les modules voisins (sol, air, défense, dégâts, rebord, coups). */
 import { SHIELD } from '../core/config';
 import type { Rect } from '../core/math';
 import type { Item } from '../items/item';
@@ -34,8 +34,6 @@ export type StateId =
   | 'ledge'
   | 'ledgeclimb'
   | 'ledgeroll'
-  | 'grabbing'
-  | 'grabbed'
   | 'dizzy'
   | 'dead'
   | 'respawn'
@@ -53,6 +51,8 @@ export interface ActiveMove {
   readonly hits: Map<number, number>;
   /** Le coup suivant de l'enchaînement est demandé. */
   chained: boolean;
+  /** Smash lancé par direction + A : relâché avant la charge, il devient ce coup rapide (tilt). */
+  tilt?: string;
 }
 
 export interface FighterStats {
@@ -112,9 +112,6 @@ export class Fighter {
   ledge: Ledge | null = null;
   ledgeInvincibleReady = true;
   regrab = 0;
-  partner: Fighter | null = null;
-  grabTimer = 0;
-  pummelReady = 0;
 
   item: Item | null = null;
   /** Direction et force du prochain lancer d'objet. */

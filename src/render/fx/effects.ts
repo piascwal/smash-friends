@@ -142,9 +142,6 @@ export class Effects {
         P.add({ kind: 'ring', x: e.x, y: e.y, size: 16, grow: 4, life: 14, color: '#7af5ff' });
         sfx.counter();
         return;
-      case 'grab':
-        sfx.grab();
-        return;
       case 'explosion':
         this.explosion(e.x, e.y, e.r);
         return;

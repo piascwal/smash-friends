@@ -39,15 +39,17 @@ export class Camera {
       maxY = 0;
     }
     // marges, puis bornes du stage
-    minX = Math.max(cam.left, minX - 320);
-    maxX = Math.min(cam.right, maxX + 320);
-    minY = Math.max(cam.top, minY - 240);
-    maxY = Math.min(cam.bottom, Math.max(maxY + 230, 260));
-    const w = Math.max(1000, maxX - minX);
-    const h = Math.max(580, maxY - minY);
+    // marges autour des combattants : assez pour voir venir, pas trop pour qu'ils restent grands
+    minX = Math.max(cam.left, minX - 220);
+    maxX = Math.min(cam.right, maxX + 220);
+    minY = Math.max(cam.top, minY - 170);
+    maxY = Math.min(cam.bottom, Math.max(maxY + 150, 170));
+    const w = Math.max(640, maxX - minX);
+    const h = Math.max(400, maxY - minY);
     let zoom = Math.min(viewW / w, viewH / h);
     const fullZoom = Math.min(viewW / (cam.right - cam.left), viewH / (cam.bottom - cam.top));
-    zoom = clamp(zoom, fullZoom, viewH / 580);
+    // au plus près, un combattant fait un quart de la hauteur de l'écran
+    zoom = clamp(zoom, fullZoom, viewH / 400);
     let tx = (minX + maxX) / 2;
     let ty = (minY + maxY) / 2;
     if (this.focus) {

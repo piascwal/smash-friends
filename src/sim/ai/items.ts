@@ -37,6 +37,6 @@ export function useItem(f: Fighter, t: Fighter, rng: Rng): Controls[] | null {
   if (it.def.kind === 'shooter' && aligned && Math.abs(dx) < 500) {
     return [ctrl(toward * 0.4, 0), ...tap(0, 0, 'attack')];
   }
-  if (aligned && Math.abs(dx) < 420) return tap(toward, 0, 'grab');
+  if (aligned && Math.abs(dx) < 420) return tap(toward, 0, 'special');
   return null;
 }

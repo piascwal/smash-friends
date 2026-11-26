@@ -11,34 +11,36 @@ et s'installe comme une application sur Android (PWA, menu du navigateur : « In
 
 ## Jouer
 
-| Action               | Clavier gauche | Clavier droite | Manette              |
-| -------------------- | -------------- | -------------- | -------------------- |
-| Bouger               | Z Q S D        | Flèches        | Stick gauche         |
-| Attaque              | F              | J              | A                    |
-| Spécial              | G              | K              | B                    |
-| Saut                 | Espace         | I              | X, Y (ou stick haut) |
-| Bouclier / esquive   | Maj gauche     | L              | Gâchettes, LB        |
-| Smash (directionnel) | R              | U              | Stick droit          |
-| Chope / lancer objet | T              | O              | RB                   |
+| Action             | Clavier gauche | Clavier droite | Manette           | Tactile            |
+| ------------------ | -------------- | -------------- | ----------------- | ------------------ |
+| Bouger             | Z Q S D        | Flèches        | Stick gauche      | Stick virtuel      |
+| Saut               | Espace         | I              | Stick haut, X, Y  | Stick vers le haut |
+| Attaque / smash    | F              | J              | A                 | A                  |
+| Spécial / lancer   | G              | K              | B                 | B                  |
+| Bouclier / esquive | Maj gauche     | L              | Gâchettes, LB, RB | GARDE              |
 
-Sur téléphone : stick virtuel à gauche, boutons à droite. Deux joueurs peuvent partager un clavier (une
+Les coups au sol : **A seul** donne le jab ; **direction + A maintenu** charge le smash de cette
+direction (avant, haut, bas), qui part quand on lâche A ; **direction + A bref** donne le coup rapide
+(tilt). À la manette, le stick droit lance un smash directement. En l'air, direction + A donne l'aérien.
+On ramasse un objet avec A et on le lance avec B.
+
+Sur téléphone : stick virtuel à gauche, trois boutons à droite (A, B, GARDE). Deux joueurs peuvent partager un clavier (une
 moitié chacun) ; une manette rejoint la partie en appuyant sur A à la sélection.
 
 Ce qui fait le gameplay « Melee » :
 
 - **Éjection** calculée avec la formule de Melee (pourcents, dégâts, poids, éjection de base et
   croissance), étourdissement proportionnel, vrille au-delà d'un seuil, angle « Sakurai ».
-- **Smashs chargés** (jusqu'à +40 %), smash au stick (direction + attaque en même temps) ou au stick C.
+- **Smashs chargés** (jusqu'à +40 %) : direction + A maintenu, lâcher pour frapper.
 - **Influence directionnelle** (DI) : tenir le stick pendant l'arrêt sur image dévie l'éjection de 18°.
 - **Bouclier** qui s'use et casse (étourdi), roulades, esquive sur place, esquive aérienne
   directionnelle (le wavedash marche), **récupération au sol** (bouclier juste avant l'impact),
   **L-cancel** (lag d'atterrissage divisé par deux), chute rapide, saut court, dash dance.
 - **Rebords** : saisie automatique avec invincibilité, un seul par rebord (ledge hog), remontée,
   saut, roulade, attaque.
-- **Chopes**, coups pendant la chope, lancers dans quatre directions.
 - **Météores** (aérien bas), spéciaux par personnage selon son style (projectiles, ruées, remontées,
   contre, renvoi de projectiles, toupies…).
-- **Objets** (images de la banque) : dauphin (la « batte »), frisbee qui revient, boîtier de CD, baladeur
+- **Objets** (images de la banque, lancés avec B) : dauphin (la « batte »), frisbee qui revient, boîtier de CD, baladeur
   qui tire, pile et baril qui explosent, caisses et tonneaux qui libèrent d'autres objets, donuts et
   cœur qui soignent, étoile d'invincibilité.
 - **Motion design** : arrêt sur image et tremblement à l'impact, étincelles selon l'effet (feu,
@@ -72,7 +74,7 @@ Ce qui fait le gameplay « Melee » :
 src/sim/          la simulation, sans navigateur (tests, hôte réseau)
   core/           maths, hasard reproductible, commandes, constantes physiques
   stage/          définition des stages, plateformes mobiles, rebords
-  fighter/        un combattant : états (sol, air, défense, dégâts, rebord, chope), physique, coups
+  fighter/        un combattant : états (sol, air, défense, dégâts, rebord), physique, coups
   moves/          coups communs, spéciaux (fabriques), objets ; assemblage par personnage
   combat/         éjection (Melee), application des frappes, détection, prédiction du KO
   projectiles/    catalogue et vol des projectiles

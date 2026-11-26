@@ -87,7 +87,7 @@ export const fsmash: MoveDef = {
   windup: 'block',
   windupEnd: 10,
   total: 50,
-  charge: { frame: 6, max: 60, button: 'smash', bonus: 0.4 },
+  charge: { frame: 6, max: 60, button: 'attack', bonus: 0.4 },
   hitboxes: [hb(12, 15, 58, -60, 26, 16, 361, 30, 100), hb(12, 15, 26, -60, 20, 13, 361, 25, 95)],
   motion: [
     { frame: 11, vx: 5 },
@@ -104,7 +104,7 @@ export const usmash: MoveDef = {
   windup: 'crouch',
   windupEnd: 8,
   total: 46,
-  charge: { frame: 5, max: 60, button: 'smash', bonus: 0.4 },
+  charge: { frame: 5, max: 60, button: 'attack', bonus: 0.4 },
   hitboxes: [hb(9, 10, 26, -60, 22, 15, 88, 34, 100), hb(11, 15, 6, -124, 30, 15, 88, 34, 100)],
   fx: { stretch: 1.18, trail: 'smash' },
   sfx: 'smash',
@@ -118,7 +118,7 @@ export const dsmash: MoveDef = {
   windup: 'crouch',
   windupEnd: 6,
   total: 48,
-  charge: { frame: 4, max: 60, button: 'smash', bonus: 0.4 },
+  charge: { frame: 4, max: 60, button: 'attack', bonus: 0.4 },
   hitboxes: [
     hb(7, 9, 58, -14, 22, 14, 25, 28, 95),
     hb(15, 17, -58, -14, 22, 14, 25, 28, 95, { behind: true }),

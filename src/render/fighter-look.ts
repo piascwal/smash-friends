@@ -141,7 +141,6 @@ function defensiveLook(f: Fighter, time: number, l: Look): Look {
       l.trail = 'blanc';
       return l;
     case 'hitstun':
-    case 'grabbed':
     case 'dizzy':
       l.pose = 'hit';
       if (f.state === 'dizzy') l.rot = Math.sin(time * 0.15) * 8;
@@ -158,9 +157,6 @@ function defensiveLook(f: Fighter, time: number, l: Look): Look {
       l.pose = 'jump';
       l.rot = -18;
       l.dy = 6;
-      return l;
-    case 'grabbing':
-      l.pose = 'punch_light';
       return l;
     case 'win':
       l.pose = 'win';

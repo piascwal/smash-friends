@@ -2,7 +2,7 @@
    vitesse (durées) et de sa puissance (dégâts). */
 import type { FighterDef } from '../roster/types';
 import { bair, dair, fair, nair, uair } from './aerials';
-import { bthrow, dashGrab, dthrow, fthrow, getupAttack, grab, ledgeAttack, pummel, uthrow } from './grabs';
+import { getupAttack, ledgeAttack } from './getup';
 import { itemShoot, itemSmash, itemSwing, itemThrow } from './items';
 import { dashAttack, dsmash, dtilt, fsmash, ftilt, jab1, jab2, jab3, usmash, utilt } from './ground';
 import type { MoveDef, Moveset } from './types';
@@ -59,13 +59,6 @@ export function buildMoveset(def: FighterDef): Moveset {
     sspecial: sp.sspecial,
     uspecial: sp.uspecial,
     dspecial: sp.dspecial,
-    grab,
-    dashgrab: dashGrab,
-    pummel,
-    fthrow,
-    bthrow,
-    uthrow,
-    dthrow,
     getup: getupAttack,
     ledge: ledgeAttack,
     itemswing: itemSwing,
