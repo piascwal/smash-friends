@@ -1,7 +1,6 @@
 /* Éjections (sortie des zones), crédit du KO, et retour sur la plateforme de réapparition. */
 import { RESPAWN } from '../core/config';
 import type { Fighter } from '../fighter/fighter';
-import { releaseGrab } from '../fighter/grab';
 import { dropItem } from '../items/carry';
 import type { World } from '../world';
 import type { BlastSide } from './events';
@@ -32,7 +31,6 @@ export function knockOut(f: Fighter, w: World, side: BlastSide, timed: boolean):
   if (!timed && f.stocks <= 0) f.eliminatedAt = w.frame;
   const star = side === 'top' && w.rng.chance(0.5);
   w.emit({ type: 'ko', who: f.slot, x: f.x, y: f.cy, side, star, by: credited?.slot ?? -1 });
-  if (f.partner) releaseGrab(f);
   dropItem(f);
   f.setState('dead');
   f.respawnTimer = RESPAWN.delay;

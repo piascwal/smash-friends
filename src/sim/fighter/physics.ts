@@ -19,8 +19,6 @@ const STAYS_ON_EDGE = new Set<StateId>([
   'knockdown',
   'getup',
   'tech',
-  'grabbing',
-  'grabbed',
   'respawn',
   'dizzy',
   'win',

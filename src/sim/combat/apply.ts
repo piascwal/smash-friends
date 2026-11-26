@@ -4,7 +4,6 @@ import { PHYSICS } from '../core/config';
 import { startMove } from '../fighter/actions';
 import { breakShield } from '../fighter/defense';
 import type { Fighter } from '../fighter/fighter';
-import { releaseGrab } from '../fighter/grab';
 import { dropItem } from '../items/carry';
 import type { Effect } from '../moves/types';
 import type { World } from '../world';
@@ -69,7 +68,6 @@ function emitHit(
 }
 
 export function dealHit(w: World, victim: Fighter, spec: HitSpec, ctx: HitContext): void {
-  if (victim.partner) releaseGrab(victim);
   if (victim.item?.def.heavy) dropItem(victim);
   const dmg = spec.dmg;
   victim.percent = Math.min(999, victim.percent + dmg);

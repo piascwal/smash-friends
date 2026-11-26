@@ -6,14 +6,12 @@ import { updateMove, type ThrowItemFn } from './attack';
 import { applyLaunch, updateDamageStates } from './damage';
 import { regenShield, updateDefense } from './defense';
 import type { Fighter, StateId } from './fighter';
-import { updateGrabbed, updateGrabbing, updateThrow, type HitFn } from './grab';
 import { updateGround } from './ground';
 import { checkLedgeGrab, updateLedge } from './ledge';
 import { stepPhysics } from './physics';
 
-/** Les fonctions de combat et d'objets dont un combattant a besoin (injectées par le match). */
+/** Les fonctions d'objets dont un combattant a besoin (injectées par le match). */
 export interface FighterHooks {
-  hit: HitFn;
   throwItem: ThrowItemFn;
 }
 
@@ -28,7 +26,7 @@ const DEFENSE = new Set<StateId>([
   'dizzy',
 ]);
 const DAMAGE = new Set<StateId>(['hitstun', 'tumble', 'knockdown', 'getup', 'tech']);
-const NO_PHYSICS = new Set<StateId>(['ledge', 'grabbed', 'dead', 'respawn']);
+const NO_PHYSICS = new Set<StateId>(['ledge', 'dead', 'respawn']);
 /** États au sol qui passent en chute quand le sol se dérobe. */
 const FALLS_OFF = new Set<StateId>(['walk', 'dash', 'run', 'idle', 'crouch', 'landing', 'shieldrelease']);
 
@@ -48,12 +46,7 @@ function updateState(f: Fighter, w: World, hooks: FighterHooks): void {
   if (DEFENSE.has(s)) return updateDefense(f, w);
   if (DAMAGE.has(s)) return updateDamageStates(f, w);
   if (s === 'ledge') return updateLedge(f, w);
-  if (s === 'grabbing') return updateGrabbing(f, w, hooks.hit);
-  if (s === 'grabbed') return updateGrabbed(f);
-  if (s === 'move') {
-    if (f.move?.def.kind === 'throw') updateThrow(f, w, hooks.hit);
-    return updateMove(f, w, hooks.throwItem);
-  }
+  if (s === 'move') return updateMove(f, w, hooks.throwItem);
 }
 
 export function updateFighter(f: Fighter, w: World, input: Controls, hooks: FighterHooks): void {

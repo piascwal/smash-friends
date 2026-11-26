@@ -6,9 +6,7 @@ export const BUTTONS = {
   special: 2,
   jump: 4,
   shield: 8,
-  grab: 16,
-  smash: 32,
-  pause: 64,
+  pause: 16,
 } as const;
 
 export type Button = keyof typeof BUTTONS;

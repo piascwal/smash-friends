@@ -23,10 +23,10 @@ export function shortHopAerial(towardX: number, dirX: number, dirY: number, dela
   return out;
 }
 
-/** Smash chargé : maintient le bouton smash `charge` images. */
+/** Smash chargé : direction + A tenu (assez longtemps pour ne pas devenir un coup rapide). */
 export function chargedSmash(dirX: number, dirY: number, charge: number): Controls[] {
   const out: Controls[] = [];
-  for (let i = 0; i < Math.max(1, charge); i++) out.push(ctrl(dirX, dirY, ['smash']));
+  for (let i = 0; i < 8 + charge; i++) out.push(ctrl(dirX, dirY, ['attack']));
   out.push(ctrl(0, 0));
   return out;
 }

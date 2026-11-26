@@ -1,6 +1,6 @@
 /* Le cerveau d'un combattant IA, niveau 1 à 9 : temps de réaction, adresse (retour sur le stage,
    influence directionnelle, récupération au sol), défense et choix des coups. */
-import { NEUTRAL, type Controls } from '../core/input';
+import { BUTTONS, NEUTRAL, type Controls } from '../core/input';
 import { Rng } from '../core/rng';
 import type { Fighter } from '../fighter/fighter';
 import type { Brain, Match } from '../match/match';
@@ -48,7 +48,7 @@ export class CpuBrain implements Brain {
   think(m: Match, f: Fighter): Controls {
     const out = this.decide(m, f);
     // un bouton tenu deux images de suite est relâché : chaque action est un nouvel appui
-    const pressed = out.buttons & this.last.buttons & ~8 & ~32;
+    const pressed = out.buttons & this.last.buttons & (BUTTONS.jump | BUTTONS.special);
     const c = pressed ? { ...out, buttons: out.buttons & ~pressed } : out;
     this.last = c;
     return c;
@@ -57,8 +57,7 @@ export class CpuBrain implements Brain {
   private decide(m: Match, f: Fighter): Controls {
     if (m.phase !== 'fight') return NEUTRAL;
     if (f.hitlag > 0 && f.pendingLaunch) return this.rng.chance(this.skill * 0.9) ? survivalDI(f) : NEUTRAL;
-    if (f.state === 'grabbed' || f.state === 'dizzy')
-      return ctrl(m.frame % 2 ? 1 : -1, 0, m.frame % 2 ? ['attack'] : ['jump']);
+    if (f.state === 'dizzy') return ctrl(m.frame % 2 ? 1 : -1, 0, m.frame % 2 ? ['attack'] : ['jump']);
     if (f.state === 'respawn') return f.t > 50 ? ctrl(f.x < 0 ? 1 : -1, 0) : NEUTRAL;
     if (f.state === 'ledge') return this.onLedge(f);
     if ((f.state === 'tumble' || f.state === 'hitstun') && this.nearGround(m, f)) {
@@ -69,7 +68,6 @@ export class CpuBrain implements Brain {
       return recover(m, f, this.rng, this.skill);
     }
     if (this.queue.length) return this.queue.shift()!;
-    if (f.state === 'grabbing') return this.throwDir(m, f);
     if (BUSY.has(f.state) || f.hitstun > 0) return NEUTRAL;
     if (--this.wait > 0) return this.walk(m, f);
     this.wait = this.reaction + this.rng.int(0, this.reaction);
@@ -119,14 +117,5 @@ export class CpuBrain implements Brain {
 
   private nearGround(m: Match, f: Fighter): boolean {
     return f.vy + f.kby > 0 && !!m.stage.landing(f.x, f.y, f.y + 40, false);
-  }
-
-  private throwDir(m: Match, f: Fighter): Controls {
-    if (f.t < 4 + this.rng.int(0, 10)) return m.frame % 9 === 0 ? ctrl(0, 0, ['attack']) : NEUTRAL;
-    const edgeBehind = Math.sign(f.x) === -f.facing;
-    const r = this.rng.next();
-    if (edgeBehind && this.skill > 0.4 && r < 0.6) return ctrl(-f.facing, 0);
-    if (r < 0.4) return ctrl(f.facing, 0);
-    return r < 0.7 ? ctrl(0, -1) : ctrl(0, 1);
   }
 }

@@ -68,7 +68,7 @@ function struckByAttacks(w: World, it: Item): void {
   const circle = { x: it.x, y: it.y, r: it.def.radius };
   for (const f of w.fighters) {
     for (const hb of activeHitboxes(f)) {
-      if (hb.def.grab || !circleCircle(hb, circle) || f.move!.hits.has(-it.uid)) continue;
+      if (!circleCircle(hb, circle) || f.move!.hits.has(-it.uid)) continue;
       f.move!.hits.set(-it.uid, f.move!.frame);
       it.thrownBy = f.slot;
       it.thrownTeam = f.team;

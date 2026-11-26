@@ -55,9 +55,6 @@ export const sfx = {
     for (let i = 0; i < 5; i++)
       tone({ type: 'triangle', from: 1600 - i * 220, dur: 0.15, gain: 0.12, delay: i * 0.06 });
   },
-  grab(): void {
-    tone({ type: 'square', from: 220, to: 160, dur: 0.06, gain: 0.08 });
-  },
   item(what: string): void {
     if (what === 'spawn')
       for (let i = 0; i < 3; i++)

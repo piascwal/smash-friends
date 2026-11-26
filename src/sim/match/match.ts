@@ -74,7 +74,6 @@ export class Match implements World {
     });
     this.spawner = new ItemSpawner(config.items, this);
     this.hooks = {
-      hit: (w, a, v, h, dir, pummel) => this.grabHit(a, v, h, dir, pummel),
       throwItem: (f, w) => throwItem(f, w),
     };
   }
@@ -111,27 +110,6 @@ export class Match implements World {
     for (const it of this.items) {
       if (!it.dead && it.def.explosion && Math.hypot(it.x - x, it.y - y) < r) explodeItem(this, it);
     }
-  }
-
-  private grabHit(a: Fighter, v: Fighter, h: MatchHitbox, dir: number, pummel?: boolean): void {
-    if (pummel) {
-      v.percent = Math.min(999, v.percent + h.dmg);
-      v.hitlag = a.hitlag = 5;
-      this.emit({
-        type: 'hit',
-        x: v.x,
-        y: v.cy,
-        damage: h.dmg,
-        kb: 0,
-        effect: 'normal',
-        attacker: a.slot,
-        victim: v.slot,
-        fatal: false,
-        angle: 0,
-      });
-      return;
-    }
-    dealHit(this, v, h, { by: a.slot, attacker: a, x: v.x, y: v.cy, dir });
   }
 
   /** Avance d'une image. `inputs[slot]` : commandes des humains (les IA pensent elles-mêmes). */
@@ -209,5 +187,3 @@ export class Match implements World {
     return rank(this.fighters, this.config.mode, this.winningTeam);
   }
 }
-
-type MatchHitbox = Parameters<FighterHooks['hit']>[3];

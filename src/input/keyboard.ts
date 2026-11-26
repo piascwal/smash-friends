@@ -35,8 +35,6 @@ export const LEFT_KEYS: KeyScheme = {
     special: ['KeyG'],
     jump: ['Space'],
     shield: ['ShiftLeft'],
-    smash: ['KeyR'],
-    grab: ['KeyT'],
   },
 };
 
@@ -50,8 +48,6 @@ export const RIGHT_KEYS: KeyScheme = {
     special: ['KeyK', 'Numpad2'],
     jump: ['KeyI', 'Numpad0'],
     shield: ['KeyL', 'Numpad3'],
-    smash: ['KeyU', 'Numpad5'],
-    grab: ['KeyO', 'Numpad4'],
   },
 };
 

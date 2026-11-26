@@ -31,7 +31,6 @@ export type GameEvent =
   | { type: 'ledge'; who: number; x: number; y: number }
   | { type: 'counter'; who: number; x: number; y: number }
   | { type: 'reflect'; x: number; y: number }
-  | { type: 'grab'; who: number; victim: number }
   | { type: 'item'; what: 'spawn' | 'pickup' | 'throw' | 'heal' | 'star' | 'break'; x: number; y: number }
   | { type: 'explosion'; x: number; y: number; r: number }
   | { type: 'respawn'; who: number }

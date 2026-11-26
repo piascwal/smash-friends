@@ -71,7 +71,7 @@ export function updateLedge(f: Fighter, w: World): void {
   if (f.t < 8) return;
   const c = f.ctl;
   const toward = c.cur.x * f.facing;
-  if (c.pressed('jump') || c.flickY() === -1) {
+  if (c.pressed('jump') || c.tapUp()) {
     c.consume('jump');
     release(f);
     leaveGround(f);

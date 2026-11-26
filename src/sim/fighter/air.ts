@@ -29,7 +29,7 @@ export function checkFastFall(f: Fighter): void {
 
 function tryAirActions(f: Fighter, w: World): boolean {
   const c = f.ctl;
-  if ((c.pressed('jump') || (f.tapJump && c.flickY() === -1)) && f.jumpsLeft > 0) {
+  if ((c.pressed('jump') || (f.tapJump && c.tapUp())) && f.jumpsLeft > 0) {
     c.consume('jump');
     f.jumpsLeft--;
     f.vy = -f.stats.doubleJump;
@@ -39,10 +39,9 @@ function tryAirActions(f: Fighter, w: World): boolean {
     w.emit({ type: 'jump', who: f.slot, x: f.x, y: f.y, air: true });
     return true;
   }
-  if ((c.pressed('grab') || c.pressed('attack')) && !f.item) {
+  if (c.pressed('attack') && !f.item) {
     const it = itemInReach(f, w);
     if (it) {
-      c.consume('grab');
       c.consume('attack');
       pickUp(f, it, w);
       return true;

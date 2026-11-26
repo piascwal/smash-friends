@@ -4,7 +4,7 @@ import { PHYSICS } from '../core/config';
 import { BUTTONS, NEUTRAL, held, type Button, type Controls } from '../core/input';
 
 const NAMES = Object.keys(BUTTONS) as Button[];
-const HISTORY = 4;
+const HISTORY = 6;
 
 export type Direction = 'neutral' | 'up' | 'down' | 'forward' | 'back';
 
@@ -60,6 +60,11 @@ export class ControlReader {
     if (Math.abs(this.cur.y) < 0.7) return 0;
     const wasNeutral = this.history.some((h) => Math.abs(h.y) < 0.3);
     return wasNeutral && Math.abs(this.prev.y) < 0.7 ? (this.cur.y < 0 ? -1 : 1) : 0;
+  }
+
+  /** Stick poussé vers le haut à l'instant (saut au stick, quelle que soit la vitesse du geste). */
+  tapUp(): boolean {
+    return this.cur.y < -0.6 && this.prev.y >= -0.6;
   }
 
   /** Stick C poussé à l'instant : sa direction (smash ou aérien directionnel). */
