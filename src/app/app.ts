@@ -30,7 +30,7 @@ export class App {
 
   constructor(
     private readonly ui: HTMLElement,
-    private readonly canvas: HTMLCanvasElement,
+    readonly canvas: HTMLCanvasElement,
   ) {
     this.setup = loadSetup(isTouchScreen());
     setVolume(prefs.volume);
@@ -146,7 +146,7 @@ export class App {
 
   /** Réseau local : chargé à la demande (le module réseau n'alourdit pas le reste). */
   private async lan(): Promise<void> {
-    const { lanScreen } = await import('../net/lan-screen');
-    this.show(lanScreen(this));
+    const { LanFlow } = await import('../net/lan-screen');
+    new LanFlow(this).home();
   }
 }

@@ -23,6 +23,12 @@ export interface MatchCallbacks {
   quit(): void;
 }
 
+/** Partie en réseau, côté hôte : commandes des invités, et envoi de l'état après chaque image. */
+export interface HostNet {
+  inputs(): Map<number, Controls>;
+  after(m: Match, events: GameEvent[]): void;
+}
+
 function speak(events: readonly GameEvent[]): void {
   if (!prefs.voice) return;
   for (const e of events) {
@@ -59,6 +65,7 @@ export class MatchScreen implements Screen {
     assets: MatchAssets,
     private readonly devices: Map<number, Device>,
     private readonly cb: MatchCallbacks,
+    private readonly net?: HostNet,
   ) {
     this.match = new Match(config, brainsFor(config));
     this.renderer = new Renderer(canvas, this.match, assets);
@@ -95,6 +102,7 @@ export class MatchScreen implements Screen {
       out[slot] = c;
       if (held(c, 'pause')) pause = true;
     }
+    for (const [slot, c] of this.net?.inputs() ?? []) out[slot] = c;
     if (pause && !this.pauseWasDown && this.match.phase === 'fight') this.setPause(!this.paused);
     this.pauseWasDown = pause;
     return out;
@@ -105,6 +113,7 @@ export class MatchScreen implements Screen {
     if (this.paused) return;
     this.match.step(ins.map((c) => c ?? NEUTRAL));
     const events = this.match.drainEvents();
+    this.net?.after(this.match, events);
     speak(events);
     this.renderer.tick(events);
     if (!prefs.cinematic) this.renderer.effects.cinematic = 0;
