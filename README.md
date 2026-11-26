@@ -74,7 +74,7 @@ Ce qui fait le gameplay « Melee » :
 src/sim/          la simulation, sans navigateur (tests, hôte réseau)
   core/           maths, hasard reproductible, commandes, constantes physiques
   stage/          définition des stages, plateformes mobiles, rebords
-  fighter/        un combattant : états (sol, air, défense, dégâts, rebord, chope), physique, coups
+  fighter/        un combattant : états (sol, air, défense, dégâts, rebord), physique, coups
   moves/          coups communs, spéciaux (fabriques), objets ; assemblage par personnage
   combat/         éjection (Melee), application des frappes, détection, prédiction du KO
   projectiles/    catalogue et vol des projectiles
