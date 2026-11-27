@@ -1,4 +1,4 @@
-/* Rebords : on s'y accroche en revenant sur le stage (un seul combattant par rebord : le « ledge hog »),
+/* Rebords : on s'y accroche en revenant sur le stage (un seul combattant par rebord : l'occuper empêche l'adversaire de s'y raccrocher),
    puis on remonte, saute, attaque, roule ou lâche. */
 import { LEDGE } from '../core/config';
 import { ledgeX, ledgeY, type Ledge } from '../stage/platforms';

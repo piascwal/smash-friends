@@ -65,7 +65,7 @@ export function updateAir(f: Fighter, w: World): void {
   checkFastFall(f);
 }
 
-/** Lag d'atterrissage d'un aérien, divisé par deux si le bouclier a été pressé juste avant (L-cancel). */
+/** Lag d'atterrissage d'un aérien, divisé par deux si le bouclier a été pressé juste avant (atterrissage amorti). */
 function aerialLandingLag(f: Fighter): number {
   const lag = f.move?.def.landingLag ?? 4;
   return f.ctl.since('shield') <= PHYSICS.lCancelWindow ? Math.ceil(lag / 2) : lag;

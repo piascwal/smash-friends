@@ -1,6 +1,6 @@
 /* La carte d'un emplacement de joueur, en bas de la sélection : type (joueur, CPU, fermé),
    personnage choisi, niveau de l'IA, équipe, périphérique. */
-import { characterInfo, type CharacterInfo } from '../assets/loader';
+import { characterInfo, portraitUrl } from '../assets/loader';
 import type { SlotSetup } from '../app/setup';
 import { CPU_COLOR, SLOT_COLORS, TEAM_COLORS, TEAM_NAMES } from '../render/colors';
 import { fighterDef } from '../sim/roster/characters';
@@ -13,9 +13,6 @@ export interface SlotCallbacks {
   cycleDevice(): void;
   select(): void;
 }
-
-const idleUrl = (info: CharacterInfo) =>
-  `./assets/characters/${info.id}/${info.files.win ?? info.files.idle}`;
 
 export function deviceLabel(id: string): string {
   if (id === 'tactile') return 'Tactile';
@@ -43,7 +40,7 @@ export function slotCard(
   const art = h('div.slot-art', { onclick: cb.select });
   if (s.kind !== 'off' && s.charId && s.charId !== 'random') {
     void characterInfo(s.charId).then((info) => {
-      art.append(h('img', { src: idleUrl(info), alt: info.name }));
+      art.append(h('img', { src: portraitUrl(info), alt: info.name }));
       art.append(h('div.slot-name', {}, info.name), h('div.slot-arch', {}, fighterDef(info.id).archetype));
     });
   } else if (s.kind !== 'off') {

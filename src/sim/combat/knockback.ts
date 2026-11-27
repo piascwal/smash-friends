@@ -1,5 +1,5 @@
-/* Éjection : la formule de Melee. Plus la cible a de pourcents, plus elle vole loin ; les poids lourds
-   résistent mieux. Voir https://www.ssbwiki.com/Knockback#Melee_onward */
+/* Éjection : plus la cible a de pourcents, plus elle vole loin ; les poids lourds résistent mieux.
+   La force dépend des pourcents, des dégâts du coup, du poids, d'une éjection de base et d'une croissance. */
 import { PHYSICS } from '../core/config';
 import { rad } from '../core/math';
 
@@ -21,9 +21,9 @@ export function knockback(k: KnockbackInput): number {
   return growth + k.bkb;
 }
 
-/** L'angle réel (degrés) : l'angle « Sakurai » dépend de la force et de si la cible est au sol. */
+/** L'angle réel (degrés) : l'angle automatique dépend de la force et de si la cible est au sol. */
 export function resolveAngle(angle: number, kb: number, grounded: boolean): number {
-  if (angle !== PHYSICS.sakuraiAngle) return angle;
+  if (angle !== PHYSICS.autoAngle) return angle;
   if (!grounded) return 45;
   return kb < 32 ? 0 : 44;
 }

@@ -1,4 +1,4 @@
-/* La caméra : cadre tous les combattants (zoom dynamique façon Smash), tremble aux impacts,
+/* La caméra : cadre tous les combattants (zoom dynamique), tremble aux impacts,
    et peut zoomer sur une cible (coup fatal). */
 import { clamp, lerp } from '../sim/core/math';
 import type { Match } from '../sim/match/match';

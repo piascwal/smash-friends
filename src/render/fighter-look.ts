@@ -51,6 +51,9 @@ function moveLook(f: Fighter, l: Look): Look {
   const active = def.hitboxes.some((h) => m.frame >= h.start && m.frame <= h.end + 2);
   const windup = m.charging || (def.windupEnd !== undefined && m.frame < def.windupEnd);
   l.pose = windup && def.windup ? def.windup : def.pose;
+  // coup rapide terminé : on revient en garde sans attendre la fin du coup
+  const lastHit = Math.max(0, ...def.hitboxes.map((h) => h.end));
+  if (def.walk && m.frame > lastHit + 2) l.pose = f.grounded ? 'idle' : 'jump';
   if (fx.mirror && !windup) l.facing = -f.facing;
   if (fx.flipAt && m.frame >= fx.flipAt) l.facing = -f.facing;
   if (fx.rot && !windup) l.rot = fx.rot;

@@ -20,7 +20,7 @@ export type ItemKind =
   | 'container'
   /** Baril, pile : explosent au choc. */
   | 'explosive'
-  /** Dauphin : arme de corps à corps (la batte du genre). */
+  /** Dauphin : arme de corps à corps (il frappe très fort). */
   | 'melee'
   /** Frisbee, boîtier de CD : à lancer. */
   | 'throwable'

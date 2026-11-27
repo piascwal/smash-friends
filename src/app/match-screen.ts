@@ -9,7 +9,7 @@ import { CpuBrain } from '../sim/ai/brain';
 import { NEUTRAL, held, type Controls } from '../sim/core/input';
 import type { MatchConfig } from '../sim/match/config';
 import type { GameEvent } from '../sim/match/events';
-import { Match } from '../sim/match/match';
+import { Match, type Brain } from '../sim/match/match';
 import { h } from '../ui/dom';
 import { focusFirst } from '../ui/nav';
 import { prefs } from './prefs';
@@ -52,6 +52,8 @@ export class MatchScreen implements Screen {
   readonly match: Match;
   readonly renderer: Renderer;
   private paused = false;
+  /** Vitesse du jeu (mode entraînement : ralenti). */
+  speed = 1;
   private last = performance.now();
   private acc = 0;
   private overFrames = 0;
@@ -66,8 +68,9 @@ export class MatchScreen implements Screen {
     private readonly devices: Map<number, Device>,
     private readonly cb: MatchCallbacks,
     private readonly net?: HostNet,
+    brains: (Brain | null)[] = brainsFor(config),
   ) {
-    this.match = new Match(config, brainsFor(config));
+    this.match = new Match(config, brains);
     this.renderer = new Renderer(canvas, this.match, assets);
     this.renderer.resize();
     this.renderer.camera.shakeScale = prefs.shake ? 1 : 0;
@@ -124,7 +127,7 @@ export class MatchScreen implements Screen {
   frame(now: number): void {
     const dt = Math.min(100, now - this.last);
     this.last = now;
-    const scale = this.match.phase === 'gameover' ? 0.5 : this.renderer.effects.timeScale();
+    const scale = (this.match.phase === 'gameover' ? 0.5 : this.renderer.effects.timeScale()) * this.speed;
     this.acc += dt * (this.paused ? 1 : scale);
     if (scale === 0 && !this.paused) {
       // arrêt sur image du coup fatal : seuls les effets avancent

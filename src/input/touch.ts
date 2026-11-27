@@ -2,6 +2,7 @@
    sert aussi à sauter (vers le haut), et trois boutons à droite : A (coups, smash en tenant avec une
    direction), B (spéciaux, lancer l'objet tenu), garde. */
 import { BUTTONS, type Button, type Controls } from '../sim/core/input';
+import { prefs } from '../app/prefs';
 import type { Device } from './device';
 
 const STICK_RADIUS = 60;
@@ -19,6 +20,10 @@ const LAYOUT: TouchButton[] = [
   { button: 'pause', label: 'II', cls: 'tb-pause' },
 ];
 
+/** Boutons facultatifs (Options) : saut, et smash (il pousse le stick C dans la direction du stick). */
+const JUMP: TouchButton = { button: 'jump', label: 'SAUT', cls: 'tb-jump' };
+const SMASH_CLASS = 'tb-smash';
+
 export class TouchDevice implements Device {
   readonly id = 'tactile';
   readonly label = 'Écran tactile';
@@ -27,13 +32,23 @@ export class TouchDevice implements Device {
   private y = 0;
   private buttons = 0;
   private stickId: number | null = null;
+  private smash = false;
+  /** Dernier sens horizontal poussé : le bouton smash frappe de ce côté si le stick est au neutre. */
+  private lastX = 1;
   private origin = { x: 0, y: 0 };
   private root: HTMLElement | null = null;
   private knob: HTMLElement | null = null;
   private base: HTMLElement | null = null;
 
   read(): Controls {
-    return { x: this.x, y: this.y, cx: 0, cy: 0, buttons: this.buttons };
+    let cx = 0;
+    let cy = 0;
+    if (this.smash) {
+      const strong = Math.hypot(this.x, this.y) > 0.4;
+      cx = strong ? this.x : this.lastX;
+      cy = strong ? this.y : 0;
+    }
+    return { x: this.x, y: this.y, cx, cy, buttons: this.buttons };
   }
 
   /** Affiche les commandes par-dessus le jeu. */
@@ -42,25 +57,16 @@ export class TouchDevice implements Device {
     const root = document.createElement('div');
     root.className = 'touch-controls';
     root.innerHTML = `<div class="touch-zone"></div><div class="touch-stick"><div class="touch-knob"></div></div>`;
-    for (const b of LAYOUT) {
-      const el = document.createElement('button');
-      el.className = `touch-btn ${b.cls}`;
-      el.textContent = b.label;
-      el.addEventListener('pointerdown', (e) => {
-        e.preventDefault();
-        el.setPointerCapture(e.pointerId);
-        this.buttons |= BUTTONS[b.button];
-        el.classList.add('on');
-        navigator.vibrate?.(8);
-      });
-      const up = () => {
-        this.buttons &= ~BUTTONS[b.button];
-        el.classList.remove('on');
-      };
-      el.addEventListener('pointerup', up);
-      el.addEventListener('pointercancel', up);
-      root.appendChild(el);
+    const layout = prefs.touchJump ? [...LAYOUT, JUMP] : LAYOUT;
+    for (const b of layout) {
+      root.appendChild(
+        this.button(b.label, b.cls, (on) => {
+          if (on) this.buttons |= BUTTONS[b.button];
+          else this.buttons &= ~BUTTONS[b.button];
+        }),
+      );
     }
+    if (prefs.touchSmash) root.appendChild(this.button('SMASH', SMASH_CLASS, (on) => (this.smash = on)));
     parent.appendChild(root);
     this.root = root;
     this.base = root.querySelector('.touch-stick');
@@ -68,10 +74,31 @@ export class TouchDevice implements Device {
     this.bindStick(root.querySelector('.touch-zone')!);
   }
 
+  private button(label: string, cls: string, set: (on: boolean) => void): HTMLElement {
+    const el = document.createElement('button');
+    el.className = `touch-btn ${cls}`;
+    el.textContent = label;
+    el.addEventListener('pointerdown', (e) => {
+      e.preventDefault();
+      el.setPointerCapture(e.pointerId);
+      set(true);
+      el.classList.add('on');
+      navigator.vibrate?.(8);
+    });
+    const up = () => {
+      set(false);
+      el.classList.remove('on');
+    };
+    el.addEventListener('pointerup', up);
+    el.addEventListener('pointercancel', up);
+    return el;
+  }
+
   hide(): void {
     this.root?.remove();
     this.root = null;
     this.x = this.y = this.buttons = 0;
+    this.smash = false;
   }
 
   private bindStick(zone: HTMLElement): void {
@@ -110,6 +137,7 @@ export class TouchDevice implements Device {
     const nx = dx / STICK_RADIUS;
     const ny = dy / STICK_RADIUS;
     this.x = Math.abs(nx) < 0.18 ? 0 : nx;
+    if (Math.abs(nx) > 0.4) this.lastX = Math.sign(nx);
     this.y = Math.abs(ny) < 0.18 ? 0 : ny;
   }
 }

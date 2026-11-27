@@ -12,6 +12,7 @@ import { Effects } from './fx/effects';
 import { drawHud } from './hud';
 import { drawItem, drawProjectile } from './objects-draw';
 import { drawOverlay } from './overlay';
+import { drawHitboxes } from './hitboxes';
 import { drawPlatforms } from './platforms';
 
 export class Renderer {
@@ -20,6 +21,8 @@ export class Renderer {
   readonly views: FighterView[];
   private readonly ctx: CanvasRenderingContext2D;
   private time = 0;
+  /** Mode entraînement : affiche les zones sensibles et les zones de frappe. */
+  showHitboxes = false;
   private W = 1280;
   private H = 720;
 
@@ -170,6 +173,7 @@ export class Renderer {
       if (v.f.item && v.f.alive) drawItem(ctx, v.f.item, this.assets, this.time);
     }
     for (const p of m.projectiles) drawProjectile(ctx, p, this.assets, this.time);
+    if (this.showHitboxes) drawHitboxes(ctx, m);
     this.effects.particles.draw(ctx);
     ctx.restore();
     drawOverlay(ctx, this.effects, this.camera, W, H);

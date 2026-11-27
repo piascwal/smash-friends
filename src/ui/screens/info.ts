@@ -54,9 +54,10 @@ export function controlsScreen(onBack: () => void): Screen {
       ]),
       table('Astuces', [
         ['Smash', 'Direction + A tenu, puis lâcher'],
-        ['Coup rapide', 'Direction + A bref'],
+        ['Avancer en frappant', 'Avant + A répété'],
+        ['Coup rapide', 'Haut ou bas + A bref'],
         ['Récupération', 'Bouclier juste avant le sol'],
-        ['L-cancel', 'Bouclier juste avant d’atterrir'],
+        ['Atterrissage amorti', 'Bouclier juste avant d’atterrir'],
         ['Ramasser', 'A près d’un objet'],
         ['Lancer l’objet', 'B'],
         ['Rebord', 'Il s’attrape tout seul'],
@@ -116,6 +117,16 @@ export function optionsScreen(onBack: () => void): Screen {
         'Ralenti du coup fatal',
         () => prefs.cinematic,
         (v) => (prefs.cinematic = v),
+      ),
+      toggle(
+        'Tactile : bouton saut',
+        () => prefs.touchJump,
+        (v) => (prefs.touchJump = v),
+      ),
+      toggle(
+        'Tactile : bouton smash',
+        () => prefs.touchSmash,
+        (v) => (prefs.touchSmash = v),
       ),
     ),
   );

@@ -116,8 +116,11 @@ function collideSolids(f: Fighter, w: World, res: PhysicsResult, y0: number): vo
 export function stepPhysics(f: Fighter, w: World): PhysicsResult {
   const res: PhysicsResult = { landed: null, leftGround: false, wall: 0 };
   if (f.dropThrough > 0) f.dropThrough--;
-  if (f.grounded && f.platform) groundStep(f, res);
-  else airStep(f, w, res);
+  if (f.grounded && f.platform) {
+    groundStep(f, res);
+    // piliers, murs, comptoirs posés sur le sol : on ne les traverse pas en marchant
+    if (f.grounded) collideSolids(f, w, res, f.y);
+  } else airStep(f, w, res);
   return res;
 }
 

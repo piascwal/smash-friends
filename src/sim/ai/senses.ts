@@ -3,6 +3,7 @@
 import { activeHitboxes } from '../combat/hits';
 import type { Fighter } from '../fighter/fighter';
 import type { Match } from '../match/match';
+import type { Platform } from '../stage/platforms';
 
 export function pickTarget(m: Match, f: Fighter, current: Fighter | null): Fighter | null {
   let best: Fighter | null = null;
@@ -56,11 +57,27 @@ export function roomAhead(m: Match, f: Fighter, dir: number): number {
   return dir > 0 ? p.x + p.w - f.x : f.x - p.x;
 }
 
-/** Hors du stage principal (à côté ou en dessous). */
+/** Hors du stage : en l'air sans aucun sol en dessous (on tombe dans le vide). */
 export function offstage(m: Match, f: Fighter): boolean {
-  const p = m.stage.main;
   if (f.grounded) return false;
-  return f.x < p.x - 4 || f.x > p.x + p.w + 4 || f.y > p.y + 10;
+  return !m.stage.landing(f.x, f.y, m.stage.def.blast.bottom, false);
+}
+
+/** Le point de sol plein le plus proche (pour revenir sur le stage). */
+export function nearestGround(m: Match, f: Fighter): { x: number; y: number; p: Platform } {
+  let best = { x: 0, y: 0, p: m.stage.main };
+  let bestD = Infinity;
+  const b = m.stage.def.blast;
+  for (const p of m.stage.platforms) {
+    if (!p.solid) continue;
+    const x = Math.max(Math.max(p.x, b.left + 200), Math.min(Math.min(p.x + p.w, b.right - 200), f.x));
+    const d = Math.hypot(x - f.x, (p.y - f.y) * 1.5);
+    if (d < bestD) {
+      bestD = d;
+      best = { x, y: p.y, p };
+    }
+  }
+  return best;
 }
 
 /** Le personnage lance-t-il un projectile avec son spécial neutre ? */

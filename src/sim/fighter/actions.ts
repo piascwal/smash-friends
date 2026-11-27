@@ -84,8 +84,15 @@ export function tryGroundAttack(f: Fighter, w: World, running: boolean): boolean
   }
   if (!c.pressed('attack')) return false;
   c.consume('attack');
+  const { x, y } = c.cur;
   if (running) startMove(f, w, 'dash');
-  else if (strongStick(c.cur.x, c.cur.y)) startSmash(f, w, c.cur.x, c.cur.y, true);
+  else if (strongStick(x, y) && Math.abs(x) >= Math.abs(y)) {
+    // vers l'avant : le coup de poing part tout de suite (on peut mitrailler en avançant) ;
+    // si A reste tenu, il se change en smash avant chargé
+    faceStick(f, x);
+    startMove(f, w, 'jab1');
+    if (f.move) f.move.holdSmash = true;
+  } else if (strongStick(x, y)) startSmash(f, w, x, y, true);
   else startMove(f, w, 'jab1');
   return true;
 }

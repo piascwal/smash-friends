@@ -14,9 +14,9 @@ export interface HitboxDef {
   y: number;
   r: number;
   dmg: number;
-  /** Degrés : 0 vers l'avant, 90 vers le haut, 270 vers le bas (météore), 361 angle « Sakurai ». */
+  /** Degrés : 0 vers l'avant, 90 vers le haut, 270 vers le bas (météore), 361 angle automatique. */
   angle: number;
-  /** Éjection de base et croissance (formule de Melee). */
+  /** Éjection de base et croissance (voir combat/knockback.ts). */
   bkb: number;
   kbg: number;
   /** Éjection fixe (ne dépend pas des pourcents) : petits coups d'enchaînement. */
@@ -66,6 +66,8 @@ export interface MoveDef {
   projectile?: { frame: number; id: ProjectileId };
   /** Coup suivant de l'enchaînement (jab 1-2-3) si l'on rappuie dans la fenêtre. */
   next?: { id: string; from: number; to: number };
+  /** On peut continuer d'avancer pendant le coup (stick vers l'avant). */
+  walk?: boolean;
   /** Peut saisir un rebord pendant le coup (remontées). */
   ledgeGrab?: boolean;
   /** Atterrir arrête le coup (spéciaux aériens). */

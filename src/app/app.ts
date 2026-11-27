@@ -17,6 +17,7 @@ import { SelectScreen } from '../ui/screens/select';
 import { stagesScreen } from '../ui/screens/stages';
 import { titleScreen } from '../ui/screens/title';
 import { MatchScreen } from './match-screen';
+import { TrainingFlow } from './training';
 import { prefs } from './prefs';
 import { enterFullscreen } from './pwa';
 import type { Screen } from './screen';
@@ -83,6 +84,7 @@ export class App {
     this.show(
       menuScreen({
         fight: () => this.select(),
+        training: () => new TrainingFlow(this).setup(),
         lan: () => void this.lan(),
         controls: () => this.show(controlsScreen(() => this.menu())),
         options: () => this.show(optionsScreen(() => this.menu())),
