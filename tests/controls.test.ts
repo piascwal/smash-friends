@@ -62,3 +62,16 @@ describe('commandes simplifiées', () => {
     expect(it.thrownBy).toBe(0);
   });
 });
+
+describe('collisions entre combattants', () => {
+  it('deux combattants qui marchent l’un vers l’autre se bloquent', () => {
+    const m = makeMatch([player(0, 'jbg'), player(1, 'mat')], { items: 'off', stageId: 'vieux-port' });
+    skipCountdown(m);
+    const [a, b] = m.fighters;
+    a!.x = -60;
+    b!.x = 60;
+    for (let i = 0; i < 120; i++) m.step([input(1, 0), input(-1, 0)]);
+    expect(Math.abs(a!.x - b!.x)).toBeGreaterThan(25);
+    expect(a!.x).toBeLessThan(b!.x);
+  });
+});

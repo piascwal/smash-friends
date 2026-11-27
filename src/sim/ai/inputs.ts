@@ -32,3 +32,13 @@ export function chargedSmash(dirX: number, dirY: number, charge: number): Contro
 }
 
 export const hold = (c: Controls, n: number): Controls[] => Array.from({ length: n }, () => c);
+
+/** Monter sur une plateforme plus haute : saut complet, puis double saut au sommet, en dérivant. */
+export function climb(towardX: number): Controls[] {
+  return [
+    ...hold(ctrl(towardX * 0.5, 0, ['jump']), 6),
+    ...hold(ctrl(towardX * 0.5, 0), 16),
+    ctrl(towardX * 0.7, 0, ['jump']),
+    ...hold(ctrl(towardX * 0.7, 0), 12),
+  ];
+}
