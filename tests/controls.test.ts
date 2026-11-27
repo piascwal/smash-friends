@@ -90,13 +90,29 @@ describe('avancer en frappant', () => {
     expect(f.x - x0).toBeGreaterThan(100);
   });
 
-  it('direction avant + A tenu : coup de poing immédiat, puis smash chargé', () => {
+  it('priorité au smash : avant + A part tout de suite en smash, et se charge tant que A est tenu', () => {
     const { m, f } = setup();
     m.step([input(1, 0, BUTTONS.attack)]);
-    expect(f.move?.def.id).toBe('jab1');
-    for (let i = 0; i < 20; i++) m.step([input(1, 0, BUTTONS.attack)]);
     expect(f.move?.def.id).toBe('fsmash');
+    for (let i = 0; i < 20; i++) m.step([input(1, 0, BUTTONS.attack)]);
     expect(f.move?.charging).toBe(true);
+  });
+
+  it('avant + A bref : coup de poing', () => {
+    const { m, f } = setup();
+    m.step([input(1, 0, BUTTONS.attack)]);
+    m.step([input(1, 0, BUTTONS.attack)]);
+    m.step([input(1, 0)]);
+    m.step([input(1, 0)]);
+    expect(f.move?.def.id).toBe('jab1');
+  });
+
+  it('A juste avant de pousser le stick : c’est quand même un smash', () => {
+    const { m, f } = setup();
+    m.step([input(0, 0, BUTTONS.attack)]);
+    m.step([input(0.3, 0, BUTTONS.attack)]);
+    m.step([input(1, 0, BUTTONS.attack)]);
+    expect(f.move?.def.id).toBe('fsmash');
   });
 });
 

@@ -55,7 +55,7 @@ export function controlsScreen(onBack: () => void): Screen {
       table('Astuces', [
         ['Smash', 'Direction + A tenu, puis lâcher'],
         ['Avancer en frappant', 'Avant + A répété'],
-        ['Coup rapide', 'Haut ou bas + A bref'],
+        ['Coup rapide', 'Direction + A bref'],
         ['Récupération', 'Bouclier juste avant le sol'],
         ['Atterrissage amorti', 'Bouclier juste avant d’atterrir'],
         ['Ramasser', 'A près d’un objet'],

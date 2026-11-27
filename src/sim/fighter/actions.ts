@@ -33,8 +33,9 @@ const SMASH: Record<Direction, string> = {
 const TILT: Record<Direction, string> = {
   up: 'utilt',
   down: 'dtilt',
-  forward: 'ftilt',
-  back: 'ftilt',
+  // vers l'avant, un appui bref donne le coup de poing (qu'on enchaîne en avançant)
+  forward: 'jab1',
+  back: 'jab1',
   neutral: 'jab1',
 };
 
@@ -86,14 +87,13 @@ export function tryGroundAttack(f: Fighter, w: World, running: boolean): boolean
   c.consume('attack');
   const { x, y } = c.cur;
   if (running) startMove(f, w, 'dash');
-  else if (strongStick(x, y) && Math.abs(x) >= Math.abs(y)) {
-    // vers l'avant : le coup de poing part tout de suite (on peut mitrailler en avançant) ;
-    // si A reste tenu, il se change en smash avant chargé
-    faceStick(f, x);
+  // priorité au smash : direction + A prépare le smash ; relâché tout de suite, c'est un coup rapide
+  else if (strongStick(x, y)) startSmash(f, w, x, y, true);
+  else {
     startMove(f, w, 'jab1');
+    // le stick poussé juste après A compte encore pour un smash
     if (f.move) f.move.holdSmash = true;
-  } else if (strongStick(x, y)) startSmash(f, w, x, y, true);
-  else startMove(f, w, 'jab1');
+  }
   return true;
 }
 

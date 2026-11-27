@@ -53,7 +53,7 @@ export interface ActiveMove {
   chained: boolean;
   /** Smash lancé par direction + A : relâché avant la charge, il devient ce coup rapide (tilt). */
   tilt?: string;
-  /** Coup de poing lancé avec une direction : A encore tenu un instant plus tard, il devient un smash. */
+  /** Coup de poing lancé stick au neutre : si le stick est poussé juste après (A tenu), c'est un smash. */
   holdSmash?: boolean;
 }
 
