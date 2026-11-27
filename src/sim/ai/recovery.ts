@@ -5,13 +5,6 @@ import type { Fighter } from '../fighter/fighter';
 import type { Match } from '../match/match';
 import { ctrl } from './inputs';
 
-/** Le combattant est-il hors du stage principal (à côté ou en dessous) ? */
-export function offstage(m: Match, f: Fighter): boolean {
-  const p = m.stage.main;
-  if (f.grounded) return false;
-  return f.x < p.x - 4 || f.x > p.x + p.w + 4 || f.y > p.y + 10;
-}
-
 /** Commandes pour revenir sur le stage. `skill` (0..1) : un niveau faible oublie parfois de remonter. */
 export function recover(m: Match, f: Fighter, rng: Rng, skill: number): Controls {
   const p = m.stage.main;

@@ -7,6 +7,7 @@ import { FPS } from '../core/config';
 import { NEUTRAL, type Controls } from '../core/input';
 import { Rng } from '../core/rng';
 import { Fighter } from '../fighter/fighter';
+import { separateFighters } from '../fighter/push';
 import { updateFighter, type FighterHooks } from '../fighter/update';
 import { throwItem } from '../items/carry';
 import type { Item } from '../items/item';
@@ -126,6 +127,7 @@ export class Match implements World {
         updateRespawn(f);
       } else updateFighter(f, this, input, this.hooks);
     }
+    separateFighters(this.fighters);
     updateProjectiles(this);
     updateItems(this);
     if (this.phase === 'fight') this.spawner.update(this);

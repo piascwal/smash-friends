@@ -74,14 +74,14 @@ Ce qui fait le gameplay « Melee » :
 src/sim/          la simulation, sans navigateur (tests, hôte réseau)
   core/           maths, hasard reproductible, commandes, constantes physiques
   stage/          définition des stages, plateformes mobiles, rebords
-  fighter/        un combattant : états (sol, air, défense, dégâts, rebord), physique, coups
+  fighter/        un combattant : états (sol, air, défense, dégâts, rebord), physique, coups, collisions
   moves/          coups communs, spéciaux (fabriques), objets ; assemblage par personnage
   combat/         éjection (Melee), application des frappes, détection, prédiction du KO
   projectiles/    catalogue et vol des projectiles
   items/          catalogue, ramassage, lancers, explosions, apparition
   roster/         stats et spéciaux de chaque personnage
   match/          réglages, boucle d'une image, éjections, règles, événements
-  ai/             IA : recentrage, retour sur le stage, choix des coups, objets
+  ai/             IA : profil par niveau, intentions, déplacements sans aller-retour, défense, coups, retour
 src/render/       rendu canvas : caméra, sprites, décor, plateformes, effets, HUD
 src/audio/        sons synthétisés (WebAudio), voix de l'annonceur
 src/input/        clavier, manettes, tactile, navigation des menus
