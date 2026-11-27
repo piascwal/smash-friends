@@ -23,8 +23,9 @@ Les coups au sol :
 
 - **A** : coup de poing (enchaînement en trois coups si on rappuie) ; avec le stick vers l'avant, on
   continue d'avancer en frappant.
-- **Avant + A maintenu**, **haut + A maintenu**, **bas + A maintenu** : le smash de cette direction se
-  charge, il part quand on lâche A. **Haut ou bas + A bref** : le coup rapide de cette direction.
+- **Direction + A** prépare toujours le smash de cette direction (priorité au smash) : maintenu, il se
+  charge et part quand on lâche A. **Appui bref** : c'est le coup rapide à la place (coup de poing vers
+  l'avant, et pendant un coup de poing chaque appui enchaîne le suivant, sans repasser par le smash).
 - En l'air, direction + A donne l'aérien. À la manette, le stick droit lance un smash directement.
 - On ramasse un objet avec A et on le lance avec B.
 

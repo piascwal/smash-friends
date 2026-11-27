@@ -58,8 +58,17 @@ function endMove(f: Fighter): void {
   else f.setState(def.helpless ? 'helpless' : 'air');
 }
 
-/** Images de A tenu après lesquelles un coup de poing vers l'avant devient un smash. */
-const HOLD_FOR_SMASH = 7;
+/** Images pendant lesquelles un stick poussé après A transforme encore le coup de poing en smash. */
+const LATE_STICK = 3;
+
+/** A appuyé une fraction de seconde avant de pousser le stick : on veut le smash, pas le jab. */
+function lateSmash(f: Fighter): boolean {
+  const m = f.move!;
+  const { x, y } = f.ctl.cur;
+  return (
+    !!m.holdSmash && m.frame <= LATE_STICK && f.ctl.held('attack') && Math.max(Math.abs(x), Math.abs(y)) > 0.5
+  );
+}
 
 /** Freinage au sol (sauf pendant un élan imposé), dérive et chute rapide en l'air. */
 function moveDrift(f: Fighter, w: World): void {
@@ -86,8 +95,8 @@ export function updateMove(f: Fighter, w: World, throwItem: ThrowItemFn): void {
     startMove(f, w, m.tilt!);
     return;
   }
-  if (m.holdSmash && m.frame >= HOLD_FOR_SMASH && f.ctl.held('attack') && Math.abs(f.ctl.cur.x) > 0.5) {
-    startSmash(f, w, f.ctl.cur.x, 0, false);
+  if (lateSmash(f)) {
+    startSmash(f, w, f.ctl.cur.x, f.ctl.cur.y, true);
     return;
   }
   if (updateCharge(f, w)) return;
