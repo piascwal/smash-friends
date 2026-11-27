@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest';
 import { applyDI, knockback, resolveAngle } from '../src/sim/combat/knockback';
 import { predictKO } from '../src/sim/combat/predict';
 
-describe('éjection (formule de Melee)', () => {
+describe('éjection', () => {
   it('grandit avec les pourcents', () => {
     const at = (percent: number) => knockback({ percent, damage: 16, weight: 100, bkb: 30, kbg: 100 });
     expect(at(120)).toBeGreaterThan(at(60));
@@ -19,7 +19,7 @@ describe('éjection (formule de Melee)', () => {
     expect(k(0)).toBeCloseTo(k(150));
   });
 
-  it('angle « Sakurai » : à plat pour un petit coup au sol, diagonale sinon', () => {
+  it('angle automatique : à plat pour un petit coup au sol, diagonale sinon', () => {
     expect(resolveAngle(361, 20, true)).toBe(0);
     expect(resolveAngle(361, 80, true)).toBe(44);
     expect(resolveAngle(361, 80, false)).toBe(45);

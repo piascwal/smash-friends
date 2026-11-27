@@ -1,5 +1,5 @@
 /* Attaques aériennes communes. Le lag à l'atterrissage est divisé par deux par une annulation
-   (bouclier juste avant de toucher le sol), comme dans Melee. */
+   (bouclier juste avant de toucher le sol). */
 import { hb, type MoveDef } from './types';
 
 export const nair: MoveDef = {

@@ -44,6 +44,9 @@ export class CpuBrain implements Brain {
   private target: Fighter | null = null;
   /** Point de repli, fixé au moment de décider de reculer. */
   private retreatX = 0;
+  /** Meilleure distance à la cible récemment, et depuis quand elle ne baisse plus (coincé ?). */
+  private bestDist = Infinity;
+  private stuckSince = 0;
   private ledgeWait = 0;
 
   constructor(
@@ -158,8 +161,9 @@ export class CpuBrain implements Brain {
     const range = 26 * f.size + t.width / 2;
     switch (this.intent) {
       case 'approach':
-        if (t.grounded && t.y < f.y - 90 && Math.abs(t.x - f.x) < 220 && f.grounded)
-          return this.burst(climb(Math.sign(t.x - f.x)));
+        if (this.otherPlatform(f, t) || this.blocked(m, f, t))
+          return this.burst(climb(Math.sign(t.x - f.x) || 1));
+        if (this.belowOnSolid(f, t)) return this.arrive(m, f, t, this.dropPoint(f, t));
         if (t.cy > f.cy + 80 && f.platform && !f.platform.solid)
           return this.burst([ctrl(), ctrl(0, 1), ctrl(0, 1)]);
         return this.arrive(m, f, t, t.x - side * range);
@@ -186,6 +190,43 @@ export class CpuBrain implements Brain {
       default:
         return this.mover.face(f, t);
     }
+  }
+
+  /** La cible est sur une autre plateforme, qu'on rejoint en sautant (plus haut, ou de l'autre côté d'un
+      trou ou d'un mur) : on saute quand on est assez près. */
+  private otherPlatform(f: Fighter, t: Fighter): boolean {
+    if (!f.grounded || !t.grounded || !f.platform || t.platform === f.platform) return false;
+    const adx = Math.abs(t.x - f.x);
+    if (t.y < f.y - 60) return adx < 300;
+    const p = f.platform;
+    const edge = t.x > f.x ? p.x + p.w - f.x : f.x - p.x;
+    return t.platform !== null && t.platform.solid && !t.platform.covers(f.x) && edge < 70 && adx < 420;
+  }
+
+  /** On ne se rapproche plus de la cible depuis longtemps (obstacle, trou) : on tente un saut. */
+  private blocked(m: Match, f: Fighter, t: Fighter): boolean {
+    const d = Math.hypot(t.x - f.x, t.y - f.y);
+    if (d < this.bestDist - 30 || d < 120) {
+      this.bestDist = d;
+      this.stuckSince = m.frame;
+      return false;
+    }
+    if (m.frame - this.stuckSince < 150 || !f.grounded) return false;
+    this.bestDist = d;
+    this.stuckSince = m.frame;
+    return true;
+  }
+
+  /** La cible est plus bas, sous notre sol plein (on ne le traverse pas) : il faut descendre par un bord. */
+  private belowOnSolid(f: Fighter, t: Fighter): boolean {
+    return f.grounded && !!f.platform?.solid && t.y > f.y + 60 && Math.abs(t.x - f.x) < f.platform.w;
+  }
+
+  /** Juste après le bord de notre plateforme le plus proche de la cible. */
+  private dropPoint(f: Fighter, t: Fighter): number {
+    const p = f.platform!;
+    const right = Math.abs(p.x + p.w - t.x) < Math.abs(p.x - t.x);
+    return right ? p.x + p.w + 60 : p.x - 60;
   }
 
   /** Aller à un point puis se tourner vers la cible. */

@@ -1,4 +1,4 @@
-/* Appliquer une frappe : pourcents, éjection (Melee), arrêt sur image, étourdissement ; ou bien
+/* Appliquer une frappe : pourcents, éjection, arrêt sur image, étourdissement ; ou bien
    frappe sur bouclier, ou déclenchement d'un contre. */
 import { PHYSICS } from '../core/config';
 import { startMove } from '../fighter/actions';

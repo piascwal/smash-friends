@@ -1,4 +1,4 @@
-/* Le HUD façon Smash : en bas, une carte par joueur (portrait, gros pourcents qui changent de couleur
+/* Le HUD : en bas, une carte par joueur (portrait, gros pourcents qui changent de couleur
    et tremblent sous les coups, vies) ; en haut, le chrono ; sur les bords, les bulles des combattants
    hors champ. */
 import type { Match } from '../sim/match/match';

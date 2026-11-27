@@ -9,6 +9,8 @@ import { ctrl } from './inputs';
 export class Mover {
   /** Sens du déplacement en cours (0 : arrêté). */
   private dir = 0;
+  /** Images passées à pousser le stick sans avancer (un mur, un pilier) : on saute par-dessus. */
+  private stuck = 0;
 
   stop(): void {
     this.dir = 0;
@@ -16,8 +18,13 @@ export class Mover {
 
   /** Va vers `x` et s'arrête à `stop` pixels près. */
   to(m: Match, f: Fighter, x: number, stop: number): Controls {
-    const p = m.stage.main;
-    const goal = Math.max(p.x + 45, Math.min(p.x + p.w - 45, x));
+    // on ne descend d'une plateforme que s'il y a du sol en dessous, et on reste loin des zones d'éjection
+    const p = f.grounded && f.platform ? f.platform : m.stage.main;
+    const b = m.stage.def.blast;
+    const safe = (edgeX: number) => !!m.stage.landing(edgeX, p.y + 1, b.bottom, false);
+    const lo = Math.max(safe(p.x - 30) ? b.left : p.x + 45, b.left + 260);
+    const hi = Math.min(safe(p.x + p.w + 30) ? b.right : p.x + p.w - 45, b.right - 260);
+    const goal = Math.max(lo, Math.min(hi, x));
     const dx = goal - f.x;
     const dir = Math.sign(dx);
     // distance de freinage à la vitesse actuelle : on lâche le stick à temps
@@ -34,6 +41,11 @@ export class Mover {
     }
     if (this.dir === 0 && Math.abs(f.vx) > 1.5) return NEUTRAL;
     this.dir = dir;
+    this.stuck = Math.abs(f.vx) < 0.4 && f.grounded ? this.stuck + 1 : 0;
+    if (this.stuck > 14) {
+      this.stuck = 0;
+      return ctrl(dir, 0, ['jump']);
+    }
     const far = Math.abs(dx) > 200;
     return ctrl(dir * (far ? 1 : 0.6), 0);
   }

@@ -1,14 +1,15 @@
 /* Coups au sol communs à tous : enchaînement de base, inclinaisons, attaque en course et smashs.
-   Valeurs inspirées de Melee (un personnage moyen), ajustées ensuite par les stats de chacun. */
+   Valeurs pour un personnage moyen, ajustées ensuite par les stats de chacun. */
 import { hb, type MoveDef } from './types';
 
 export const jab1: MoveDef = {
   id: 'jab1',
   kind: 'ground',
   pose: 'punch_light',
-  total: 16,
+  total: 13,
   hitboxes: [hb(3, 4, 34, -62, 17, 3, 80, 8, 30)],
-  next: { id: 'jab2', from: 5, to: 15 },
+  next: { id: 'jab2', from: 5, to: 12 },
+  walk: true,
   sfx: 'light',
 };
 
@@ -16,9 +17,10 @@ export const jab2: MoveDef = {
   id: 'jab2',
   kind: 'ground',
   pose: 'punch_heavy',
-  total: 17,
+  total: 14,
   hitboxes: [hb(3, 4, 40, -60, 18, 3, 80, 8, 30)],
-  next: { id: 'jab3', from: 5, to: 16 },
+  next: { id: 'jab3', from: 5, to: 13 },
+  walk: true,
   fx: { stretch: 1.05 },
   sfx: 'light',
 };
@@ -29,6 +31,7 @@ export const jab3: MoveDef = {
   pose: 'kick_light',
   total: 28,
   hitboxes: [hb(5, 7, 44, -50, 22, 5, 361, 35, 90)],
+  walk: true,
   sfx: 'medium',
 };
 
@@ -40,6 +43,7 @@ export const ftilt: MoveDef = {
   windupEnd: 4,
   total: 28,
   hitboxes: [hb(6, 9, 50, -52, 22, 9, 361, 12, 100)],
+  walk: true,
   sfx: 'medium',
 };
 

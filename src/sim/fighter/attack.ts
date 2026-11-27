@@ -1,8 +1,9 @@
 /* Déroulé d'un coup image par image : charge, mouvement imposé, projectile, enchaînement, lancer
    d'objet, fin du coup. Les frappes elles-mêmes sont résolues par combat/hits.ts. */
+import { approach } from '../core/math';
 import { ITEM_THROW_FRAME } from '../moves/items';
 import type { World } from '../world';
-import { startMove } from './actions';
+import { startMove, startSmash } from './actions';
 import { airDrift, checkFastFall } from './air';
 import type { Fighter } from './fighter';
 import { applyFriction } from './physics';
@@ -57,6 +58,9 @@ function endMove(f: Fighter): void {
   else f.setState(def.helpless ? 'helpless' : 'air');
 }
 
+/** Images de A tenu après lesquelles un coup de poing vers l'avant devient un smash. */
+const HOLD_FOR_SMASH = 7;
+
 /** Freinage au sol (sauf pendant un élan imposé), dérive et chute rapide en l'air. */
 function moveDrift(f: Fighter, w: World): void {
   const m = f.move!;
@@ -65,7 +69,10 @@ function moveDrift(f: Fighter, w: World): void {
     const lunging = def.motion?.some(
       (s) => s.vx !== undefined && s.frame <= m.frame && m.frame < s.frame + 3,
     );
-    if (!lunging) applyFriction(f, w);
+    const forward = f.ctl.cur.x * f.facing;
+    if (def.walk && forward > 0.3)
+      f.vx = approach(f.vx, f.facing * f.stats.walk * 1.4 * Math.min(1, forward), 0.8);
+    else if (!lunging) applyFriction(f, w);
     return;
   }
   airDrift(f, def.airControl ?? 1);
@@ -77,6 +84,10 @@ export function updateMove(f: Fighter, w: World, throwItem: ThrowItemFn): void {
   if (!m) return f.setState(f.grounded ? 'idle' : 'air');
   if (releasedEarly(f)) {
     startMove(f, w, m.tilt!);
+    return;
+  }
+  if (m.holdSmash && m.frame >= HOLD_FOR_SMASH && f.ctl.held('attack') && Math.abs(f.ctl.cur.x) > 0.5) {
+    startSmash(f, w, f.ctl.cur.x, 0, false);
     return;
   }
   if (updateCharge(f, w)) return;

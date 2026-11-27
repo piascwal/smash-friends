@@ -12,6 +12,8 @@ export interface PlatformDef {
   solid: boolean;
   /** Rebords qu'on peut saisir aux deux bouts (plateformes pleines). */
   ledges?: boolean;
+  /** Dessin : île flottante (dessous en pointe, par défaut) ou bloc droit (pilier, mur, tour, pont). */
+  shape?: 'island' | 'block';
   /** Mouvement de va-et-vient (sinusoïde) : amplitude et période en images. */
   move?: { dx: number; dy: number; period: number; phase?: number };
 }

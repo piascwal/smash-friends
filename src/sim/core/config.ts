@@ -1,10 +1,10 @@
 /* Constantes de la physique et du combat, à 60 images par seconde.
    Unités : le pixel du monde ; un combattant de taille 1 mesure 100 de haut.
-   Les formules d'éjection reprennent celles de Melee (voir combat/knockback.ts), mises à notre échelle. */
+   Les formules d'éjection sont dans combat/knockback.ts. */
 
 export const FPS = 60;
 
-/** Pixels du monde par « unité Melee » (un personnage moyen y mesure ~14 unités). */
+/** Pixels du monde par unité de combat (un personnage moyen mesure ~14 unités). */
 export const SCALE = 7;
 
 export const PHYSICS = {
@@ -14,10 +14,10 @@ export const PHYSICS = {
   launchDecay: 0.051 * SCALE,
   /** Images d'étourdissement par point d'éjection. */
   hitstun: 0.4,
-  /** Au-delà, le combattant part en vrille (tumble) et peut se faire mettre au sol. */
+  /** Au-delà, le combattant part en vrille  et peut se faire mettre au sol. */
   tumbleThreshold: 80,
-  /** Angle « Sakurai » : petite éjection au ras du sol, grosse en diagonale. */
-  sakuraiAngle: 361,
+  /** Angle automatique : petite éjection au ras du sol, grosse en diagonale. */
+  autoAngle: 361,
   /** Influence directionnelle : déviation maximale de l'angle d'éjection (degrés). */
   diMax: 18,
   /** Frottement au sol (px/image²). */
@@ -26,7 +26,7 @@ export const PHYSICS = {
   buffer: 6,
   /** Images pour réussir une récupération au sol (bouclier juste avant l'impact). */
   techWindow: 20,
-  /** Images pour une annulation d'atterrissage (L-cancel). */
+  /** Images pour une atterrissage amorti. */
   lCancelWindow: 7,
 } as const;
 

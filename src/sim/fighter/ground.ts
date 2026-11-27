@@ -1,4 +1,4 @@
-/* États au sol : repos, marche, dash (et « dash dance »), course, accroupi, préparation du saut,
+/* États au sol : repos, marche, dash (et changements de sens en dash), course, accroupi, préparation du saut,
    atterrissage. */
 import { approach } from '../core/math';
 import { itemInReach, pickUp } from '../items/carry';
@@ -74,7 +74,7 @@ function updateWalk(f: Fighter, w: World): void {
 
 function updateDash(f: Fighter, w: World): void {
   const flick = f.ctl.flickX();
-  if (flick !== 0 && flick !== f.facing) return startDash(f, w, flick); // dash dance
+  if (flick !== 0 && flick !== f.facing) return startDash(f, w, flick); // changement de sens en plein dash
   if (f.t >= f.duration) {
     if (Math.abs(f.ctl.cur.x) > 0.5 && Math.sign(f.ctl.cur.x) === f.facing) f.setState('run');
     else f.setState('idle');
@@ -94,7 +94,7 @@ function updateRun(f: Fighter, w: World): void {
 }
 
 function updateJumpsquat(f: Fighter, w: World): void {
-  // haut + A : le saut au stick démarre, A le transforme en smash haut (comme dans Melee)
+  // haut + A : le saut au stick démarre, A le transforme en smash haut
   if (f.ctl.pressed('attack', 3) && f.ctl.cur.y < -0.5 && !f.ctl.held('jump')) {
     f.ctl.consume('attack');
     startSmash(f, w, 0, -1, true);

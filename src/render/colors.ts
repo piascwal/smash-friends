@@ -1,4 +1,4 @@
-/* Couleurs des joueurs (et des équipes), comme les pastilles J1 à J4 du genre. */
+/* Couleurs des joueurs (et des équipes). */
 
 export const SLOT_COLORS = ['#ef3b2c', '#3b7bff', '#ffc21a', '#2fbf4a'] as const;
 export const TEAM_COLORS = ['#ef3b2c', '#3b7bff', '#2fbf4a', '#ffc21a'] as const;

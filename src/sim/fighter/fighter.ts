@@ -53,6 +53,8 @@ export interface ActiveMove {
   chained: boolean;
   /** Smash lancé par direction + A : relâché avant la charge, il devient ce coup rapide (tilt). */
   tilt?: string;
+  /** Coup de poing lancé avec une direction : A encore tenu un instant plus tard, il devient un smash. */
+  holdSmash?: boolean;
 }
 
 export interface FighterStats {

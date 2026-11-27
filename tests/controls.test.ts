@@ -75,3 +75,38 @@ describe('collisions entre combattants', () => {
     expect(a!.x).toBeLessThan(b!.x);
   });
 });
+
+describe('avancer en frappant', () => {
+  it('mitrailler A en tenant l’avant : on frappe et on avance en même temps', () => {
+    const { m, f } = setup();
+    f.facing = 1;
+    const x0 = f.x;
+    let punches = 0;
+    for (let i = 0; i < 60; i++) {
+      m.step([input(1, 0, i % 6 < 3 ? BUTTONS.attack : 0)]);
+      if (f.move?.def.id.startsWith('jab')) punches++;
+    }
+    expect(punches).toBeGreaterThan(30);
+    expect(f.x - x0).toBeGreaterThan(100);
+  });
+
+  it('direction avant + A tenu : coup de poing immédiat, puis smash chargé', () => {
+    const { m, f } = setup();
+    m.step([input(1, 0, BUTTONS.attack)]);
+    expect(f.move?.def.id).toBe('jab1');
+    for (let i = 0; i < 20; i++) m.step([input(1, 0, BUTTONS.attack)]);
+    expect(f.move?.def.id).toBe('fsmash');
+    expect(f.move?.charging).toBe(true);
+  });
+});
+
+describe('structures des stages', () => {
+  it('on ne traverse pas un pilier en marchant', () => {
+    const m = makeMatch([player(0, 'jbg'), player(1, 'mat')], { items: 'off', stageId: 'chateau' });
+    skipCountdown(m);
+    const f = m.fighter(0)!;
+    for (let i = 0; i < 180; i++) m.step([input(1, 0)]);
+    // la tour centrale va de -70 à 70 : on reste à sa gauche
+    expect(f.x).toBeLessThan(-60);
+  });
+});

@@ -17,11 +17,12 @@ const noise = (x: number, y: number) => {
   return s - Math.floor(s);
 };
 
-function drawSolid(g: CanvasRenderingContext2D, cols: number, rows: number, t: Theme): void {
+function drawSolid(g: CanvasRenderingContext2D, cols: number, rows: number, t: Theme, island: boolean): void {
   const topRows = 3;
   for (let y = 0; y < rows; y++) {
     // le dessous se resserre en pointe rocheuse (île flottante)
-    const inset = y < rows * 0.45 ? 0 : Math.floor(((y - rows * 0.45) / (rows * 0.55)) ** 1.4 * cols * 0.42);
+    const inset =
+      !island || y < rows * 0.45 ? 0 : Math.floor(((y - rows * 0.45) / (rows * 0.55)) ** 1.4 * cols * 0.42);
     for (let x = inset; x < cols - inset; x++) {
       const n = noise(x, y);
       let color: string;
@@ -81,7 +82,7 @@ export function platformCanvas(p: Platform, t: Theme): HTMLCanvasElement {
   c.height = rows + 2;
   const g = c.getContext('2d')!;
   g.translate(0, 2);
-  if (p.solid) drawSolid(g, cols, rows, t);
+  if (p.solid) drawSolid(g, cols, rows, t, (p.def.shape ?? 'island') === 'island');
   else drawThin(g, cols, rows, t);
   cache.set(p, c);
   return c;
