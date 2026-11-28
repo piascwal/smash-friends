@@ -50,10 +50,15 @@ Le gameplay :
 - **Objets** (images de la banque) : dauphin (frappe très fort), frisbee qui revient, boîtier de CD,
   baladeur qui tire, pile et baril qui explosent, caisses et tonneaux qui libèrent d'autres objets, donuts
   et cœur qui soignent, étoile d'invincibilité.
-- **14 stages** : sept ouverts (trois plateformes, terrain plat, nuage mobile, grand stage étagé,
-  escalier, glace, ascenseurs) et sept à structures (pont sans bord où l'on ne sort que par les côtés,
-  temple avec gouffre et pont suspendu, piliers, tour centrale, parois de verre, comptoir, îles
-  flottantes).
+- **21 stages**, dessinés en pixel art par le jeu (rien à télécharger en plus) :
+  - sept stages « décor », où les plateformes représentent quelque chose : toits d'un village (rue sans
+    bord), masses de terre flottantes, remparts et tours au-dessus des douves, carlingue d'un avion en
+    vol, ponton sur pilotis et îlot dans une lagune, rochers sur un lac de lave (qui brûle et projette en
+    l'air, avec des boules de lave), grand arbre dont les branches sont des plateformes ;
+  - sept stages ouverts (trois plateformes, terrain plat, nuage mobile, grand stage étagé, escalier,
+    glace, ascenseurs) ;
+  - sept stages à structures (pont sans bord, temple avec gouffre, piliers, tour centrale, parois de
+    verre, comptoir, îles flottantes).
 - **IA** de niveau 1 à 9 : réaction, agressivité, défense, précision, punitions, retour sur le stage.
 - **Entraînement** : mannequin immobile, en garde, qui saute, qui marche ou IA ; ralenti, zones de
   frappe visibles, pourcents réglables, objets à volonté, compteur de combos.
@@ -77,7 +82,7 @@ Le gameplay :
 5. **Nouvelles poses dans la banque** (atelier de sprite-bank) pour remplacer les poses de repli :
    `smash_charge` (préparation du smash), `ledge_hang` (accroché au rebord), `roll`, `airdodge`,
    `tumble` (vrille), `taunt` (provocation). Le jeu les utilisera dès qu'elles seront dans `needs.json`.
-6. **Contenu** : musiques par stage, dangers de stage, plus d'objets (marteau, ballon de foot, animaux
+6. **Contenu** : musiques par stage, nouveaux fonds de décor adaptés à chaque stage, plus d'objets (marteau, ballon de foot, animaux
    de la banque en renfort), mode Classique (enchaînement de combats contre l'IA), concours du plus long
    lancer, statistiques et replays (la simulation est déterministe : rejouer les commandes suffit).
 
@@ -86,7 +91,7 @@ Le gameplay :
 ```
 src/sim/          la simulation, sans navigateur (tests, hôte réseau)
   core/           maths, hasard reproductible, commandes, constantes physiques
-  stage/          stages (ouverts, à structures), plateformes mobiles, rebords
+  stage/          stages (décor, ouverts, à structures), plateformes mobiles, rebords, lave
   fighter/        un combattant : états (sol, air, défense, dégâts, rebord), physique, coups, collisions
   moves/          coups communs, spéciaux (fabriques), objets ; assemblage par personnage
   combat/         éjection, application des frappes, détection, prédiction du KO
@@ -95,7 +100,7 @@ src/sim/          la simulation, sans navigateur (tests, hôte réseau)
   roster/         stats et spéciaux de chaque personnage
   match/          réglages, boucle d'une image, éjections, règles, événements
   ai/             IA : profil par niveau, intentions, déplacements, défense, coups, retour ; mannequin
-src/render/       rendu canvas : caméra, sprites, décor, plateformes, effets, HUD, zones de frappe
+src/render/       rendu canvas : caméra, sprites, décors et plateformes en pixel art, eau et lave, effets, HUD
 src/audio/        sons synthétisés (WebAudio), voix de l'annonceur
 src/input/        clavier, manettes, tactile, navigation des menus
 src/ui/           écrans en DOM (titre, menu, sélection, stages, résultats, options)

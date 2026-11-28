@@ -36,6 +36,7 @@ function tickTimers(f: Fighter): void {
   if (f.starPower > 0) f.starPower--;
   if (f.regrab > 0) f.regrab--;
   if (f.frozen > 0) f.frozen--;
+  if (f.hazardCooldown > 0) f.hazardCooldown--;
   regenShield(f);
 }
 

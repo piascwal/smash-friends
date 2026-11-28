@@ -126,3 +126,19 @@ describe('structures des stages', () => {
     expect(f.x).toBeLessThan(-60);
   });
 });
+
+describe('dangers des stages', () => {
+  it('la lave brûle et projette vers le haut', () => {
+    const m = makeMatch([player(0, 'jbg'), player(1, 'mat')], { items: 'off', stageId: 'caldeira' });
+    skipCountdown(m);
+    const f = m.fighter(0)!;
+    Object.assign(f, { x: -130, y: 200, grounded: false, platform: null, state: 'air', vy: 6 });
+    let burned = false;
+    for (let i = 0; i < 30; i++) {
+      m.step([input()]);
+      if (f.percent > 0) burned = true;
+    }
+    expect(burned).toBe(true);
+    expect(f.y).toBeLessThan(200);
+  });
+});

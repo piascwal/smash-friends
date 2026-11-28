@@ -17,7 +17,8 @@ export type ProjectileId =
   | 'projecteur'
   | 'chien'
   | 'ballon'
-  | 'onde_son';
+  | 'onde_son'
+  | 'boule_lave';
 
 export type ProjectilePath =
   /** Tout droit. */

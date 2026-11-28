@@ -16,7 +16,58 @@ export interface PlatformDef {
   shape?: 'island' | 'block';
   /** Mouvement de va-et-vient (sinusoïde) : amplitude et période en images. */
   move?: { dx: number; dy: number; period: number; phase?: number };
+  /** Ce que la plateforme représente (dessin) ; absent : déduit de la matière du stage. */
+  look?: PlatformLook;
 }
+
+/** Ce que représente une plateforme : le rendu la dessine en conséquence. */
+export type PlatformLook =
+  | 'earth'
+  | 'rock'
+  | 'house'
+  | 'castle'
+  | 'wood'
+  | 'metal'
+  | 'hull'
+  | 'sand'
+  | 'ice'
+  | 'neon'
+  | 'basalt'
+  | 'plank'
+  | 'branch'
+  | 'awning'
+  | 'cloud'
+  | 'girder';
+
+/** Décor sans collision, dessiné derrière (ou devant) les combattants. */
+export interface SceneryDef {
+  kind:
+    | 'tree'
+    | 'palm'
+    | 'posts'
+    | 'tower'
+    | 'ruins'
+    | 'chimney'
+    | 'fence'
+    | 'lamp'
+    | 'flag'
+    | 'engine'
+    | 'vines';
+  x: number;
+  y: number;
+  w: number;
+  h: number;
+  front?: boolean;
+}
+
+/** Étendue d'eau (on y tombe) ou de lave (elle brûle et projette en l'air), à cette hauteur. */
+export interface Liquid {
+  kind: 'water' | 'lava';
+  y: number;
+}
+
+/** Ambiance animée par le rendu : vitesse (vol), braises, feuilles, poussière d'étoiles. */
+export type Ambience = 'speed' | 'embers' | 'leaves' | 'sparkles';
 
 export type Material = 'pierre' | 'metal' | 'bois' | 'neon' | 'sable' | 'herbe' | 'glace';
 
@@ -45,6 +96,9 @@ export interface StageDef {
   spawns: { x: number; y: number }[];
   respawn: { x: number; y: number };
   theme: Theme;
+  scenery?: SceneryDef[];
+  liquid?: Liquid;
+  ambience?: Ambience;
   /** Adhérence du sol (1 = normale ; la glace glisse). */
   traction?: number;
 }

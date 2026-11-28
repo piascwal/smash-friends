@@ -215,4 +215,17 @@ export const PROJECTILES: Record<ProjectileId, ProjectileDef> = {
     max: 4,
     color: '#ff5ad1',
   }),
+  boule_lave: P({
+    id: 'boule_lave',
+    path: 'lob',
+    speed: 0,
+    vy: -17,
+    gravity: 0.45,
+    life: 76,
+    radius: 20,
+    width: 44,
+    hit: { dmg: 10, angle: 80, bkb: 50, kbg: 60, effect: 'fire' },
+    max: 99,
+    color: '#ff6a1a',
+  }),
 };

@@ -14,6 +14,7 @@ import { drawItem, drawProjectile } from './objects-draw';
 import { drawOverlay } from './overlay';
 import { drawHitboxes } from './hitboxes';
 import { drawPlatforms } from './platforms';
+import { ambience, drawStageBack, drawStageFront, splashes } from './stage-layers';
 
 export class Renderer {
   readonly camera = new Camera();
@@ -23,6 +24,7 @@ export class Renderer {
   private time = 0;
   /** Mode entraînement : affiche les zones sensibles et les zones de frappe. */
   showHitboxes = false;
+  private readonly lastY = new Map<number, number>();
   private W = 1280;
   private H = 720;
 
@@ -74,6 +76,9 @@ export class Renderer {
     }
     for (const v of this.views) this.animate(v);
     this.ambient();
+    const stage = this.match.stage.def;
+    ambience(this.effects.particles, stage, this.view(), this.time);
+    splashes(this.effects.particles, stage, this.match.fighters, this.lastY);
     this.effects.update();
   }
 
@@ -160,13 +165,23 @@ export class Renderer {
     }
   }
 
+  /** Ce que la caméra montre, en unités du monde. */
+  private view(): { left: number; right: number; top: number; bottom: number } {
+    const c = this.camera;
+    const hw = this.W / 2 / c.zoom;
+    const hh = this.H / 2 / c.zoom;
+    return { left: c.x - hw, right: c.x + hw, top: c.y - hh, bottom: c.y + hh };
+  }
+
   draw(): void {
     const { ctx, W, H, match: m } = this;
     this.camera.update(m, W, H);
     drawBackdrop(ctx, this.assets.backdrop, m.stage.def, this.camera, W, H);
     ctx.save();
     this.camera.apply(ctx, W, H);
-    drawPlatforms(ctx, m.stage.platforms, m.stage.def.theme, this.time);
+    const view = this.view();
+    drawStageBack(ctx, m.stage.def, view, this.time);
+    drawPlatforms(ctx, m.stage.platforms, m.stage.def.theme);
     for (const it of m.items) if (it.holder < 0) drawItem(ctx, it, this.assets, this.time);
     for (const v of this.views) {
       drawFighter(ctx, v, this.time, this.camera.zoom);
@@ -174,6 +189,7 @@ export class Renderer {
     }
     for (const p of m.projectiles) drawProjectile(ctx, p, this.assets, this.time);
     if (this.showHitboxes) drawHitboxes(ctx, m);
+    drawStageFront(ctx, m.stage.def, view, this.time);
     this.effects.particles.draw(ctx);
     ctx.restore();
     drawOverlay(ctx, this.effects, this.camera, W, H);
