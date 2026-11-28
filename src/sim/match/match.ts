@@ -19,6 +19,7 @@ import { updateProjectiles } from '../projectiles/update';
 import type { Projectile } from '../projectiles/projectile';
 import type { ProjectileId } from '../projectiles/types';
 import { fighterDef } from '../roster/characters';
+import { updateHazards } from '../stage/hazards';
 import { StageRuntime } from '../stage/platforms';
 import { stageParId } from '../stage/stages';
 import type { World } from '../world';
@@ -128,6 +129,7 @@ export class Match implements World {
       } else updateFighter(f, this, input, this.hooks);
     }
     separateFighters(this.fighters);
+    if (this.phase === 'fight') updateHazards(this);
     updateProjectiles(this);
     updateItems(this);
     if (this.phase === 'fight') this.spawner.update(this);

@@ -109,6 +109,8 @@ export class Fighter {
   invincible = 0;
   starPower = 0;
   frozen = 0;
+  /** Images avant que la lave puisse de nouveau brûler. */
+  hazardCooldown = 0;
 
   move: ActiveMove | null = null;
   ledge: Ledge | null = null;
